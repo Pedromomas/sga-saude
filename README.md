@@ -54,7 +54,8 @@ npm install --legacy-peer-deps
 # Inicie o servidor local de desenvolvimento
 ng serve
 ```
-👨‍💻 Programadores
+---
+##👨‍💻 Programadores
 Mano, agora o papo é reto! Peguei tudo o que a gente construiu, juntei com o teu texto original e transformei num README.md de elite. Sem cortes, sem enrolação, tudo num bloco só para tu copiar e colar.
 
 A seção de Programadores agora está detalhada, com ícones e explicando exatamente o que tu fez no código, no design e no banco de dados.
