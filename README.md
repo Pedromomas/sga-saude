@@ -53,3 +53,21 @@ npm install --legacy-peer-deps
 
 # Inicie o servidor local de desenvolvimento
 ng serve
+🏗️ Desenvolvedores e Contribuidores
+Aqui estão as mentes por trás deste projeto. Se você quer rodar o sistema e entender a arquitetura, sinta-se à vontade para entrar em contato com o autor principal:
+
+<table align="center">
+<tr>
+<td align="center">
+<a href="https://www.google.com/search?q=https://github.com/Pedromomas">
+<img src="https://www.google.com/url?sa=E&source=gmail&q=https://github.com/Pedromomas.png" width="150px;" alt="Foto do Pedro Fernandes"/><br />
+<sub><b>Pedro Fernandes Bahia Rocha</b></sub>
+</a><br />
+🚀 <b>Lead Developer / ADS Student</b>
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+</div>
