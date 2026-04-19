@@ -1,0 +1,200 @@
+<mat-toolbar class="glass-navbar fade-in-down">
+  <div class="navbar-left">
+    <div class="logo-area" routerLink="/dashboard-teste">
+      <div class="logo-emblem">
+         <mat-icon class="logo-icon">health_and_safety</mat-icon>
+         <div class="glow-effect"></div>
+      </div>
+      <span class="logo-text">SGA <span class="text-gradient">Saúde</span></span>
+    </div>
+  </div>
+  
+  <div class="navbar-center">
+    <h2 class="page-title">Novo Agendamento</h2>
+  </div>
+  
+  <div class="navbar-right">
+    <div class="nav-actions">
+      <button mat-icon-button class="btn-voltar" routerLink="/dashboard-teste" title="Voltar pro Dashboard">
+        <mat-icon>dashboard</mat-icon>
+      </button>
+      <div class="divider-y"></div>
+      
+      <button class="user-chip" routerLink="/perfil-teste">
+        <div class="avatar-box">
+          @if (usuario.photoURL) {
+            <img [src]="usuario.photoURL" class="nav-avatar-img">
+          } @else {
+            {{ usuario.nome.charAt(0) }}
+          }
+        </div>
+        <div class="user-info-mini">
+          <span class="name-text">Meu Perfil</span>
+          <span class="status-text">PACIENTE VIP</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div class="schedule-bg">
+  <div class="max-width-wrapper">
+    
+    <div class="schedule-header fade-in-up delay-1">
+      <h1>Escolha o melhor momento para sua saúde.</h1>
+      <p>Preencha os dados e confirme sua consulta em segundos.</p>
+    </div>
+
+    <div class="schedule-grid fade-in-up delay-2">
+      
+      <div class="form-panel premium-box hover-float">
+        
+        <div class="step-indicator">Passo 1 de 2</div>
+
+        <div class="form-step">
+          <div class="step-label"><mat-icon>stethoscope</mat-icon> Qual a especialidade?</div>
+          <div class="custom-select-wrapper">
+            <select [(ngModel)]="novaConsulta.especialidade" (ngModelChange)="atualizarHorarios()">
+              <option value="" disabled selected>Selecione uma especialidade...</option>
+              @for (esp of especialidades; track esp) {
+                <option [value]="esp">{{ esp }}</option>
+              }
+            </select>
+            <mat-icon class="select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+        <div class="form-step">
+          <div class="step-label"><mat-icon>apartment</mat-icon> Onde você quer ser atendido?</div>
+          <div class="custom-select-wrapper">
+            <select [(ngModel)]="novaConsulta.unidade" (ngModelChange)="atualizarHorarios()">
+              <option value="" disabled selected>Escolha a unidade mais próxima...</option>
+              @for (uni of unidades; track uni) {
+                <option [value]="uni">{{ uni }}</option>
+              }
+            </select>
+            <mat-icon class="select-arrow">expand_more</mat-icon>
+          </div>
+        </div>
+
+        <div class="divider-x"></div>
+
+        <div class="step-indicator">Passo 2 de 2</div>
+
+        <div class="form-step">
+          <div class="step-label"><mat-icon>calendar_today</mat-icon> Escolha a data</div>
+          
+          <div class="month-selector">
+            @for (mes of mesesDisponiveis; track mes) {
+              <button class="month-pill" 
+                      [class.active]="mesSelecionado === mes" 
+                      (click)="mesSelecionado = mes; novaConsulta.data = ''">
+                {{ mes }}
+              </button>
+            }
+          </div>
+
+          <div class="date-ribbon">
+            @for (dia of getDiasDoMesSelecionado(); track dia.dataCompleta) {
+              <button class="date-card" 
+                      [class.active]="novaConsulta.data === dia.dataCompleta"
+                      [class.esgotado]="dia.esgotado"
+                      [disabled]="dia.esgotado"
+                      (click)="!dia.esgotado && selecionarData(dia.dataCompleta)">
+                <span class="d-semana">{{ dia.diaSemana }}</span>
+                <span class="d-numero">{{ dia.diaMes }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="form-step">
+          <div class="step-label"><mat-icon>schedule</mat-icon> Horários disponíveis</div>
+          <div class="time-pills-container">
+            @if (horariosDisponiveis.length === 0) {
+              <p style="font-size: 12px; color: #ef4444; margin: 0;">Por favor, selecione a especialidade e a unidade acima.</p>
+            }
+            @for (hora of horariosDisponiveis; track hora) {
+              <button class="time-pill" 
+                      [class.active]="novaConsulta.horario === hora" 
+                      [class.esgotado]="isHorarioEsgotado(hora)"
+                      [disabled]="isHorarioEsgotado(hora) || !novaConsulta.data"
+                      (click)="!isHorarioEsgotado(hora) && selecionarHorario(hora)">
+                {{ hora }}
+              </button>
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ticket-panel fade-in-up delay-3">
+        <div class="premium-ticket hover-float">
+          
+          <div class="ticket-top">
+            <div class="ticket-brand">
+              <mat-icon>health_and_safety</mat-icon> <span>SGA Saúde</span>
+            </div>
+            <div class="ticket-status">AO VIVO</div>
+          </div>
+
+          <div class="ticket-body">
+            <h3>Passe de Consulta</h3>
+            
+            <div class="ticket-info-group">
+              <span class="info-label">Especialidade</span>
+              <strong class="info-value" [class.empty]="!novaConsulta.especialidade">
+                {{ novaConsulta.especialidade || 'Aguardando seleção...' }}
+              </strong>
+            </div>
+
+            <div class="ticket-info-group">
+              <span class="info-label">Unidade</span>
+              <strong class="info-value" [class.empty]="!novaConsulta.unidade">
+                {{ novaConsulta.unidade || 'Aguardando seleção...' }}
+              </strong>
+            </div>
+
+            <div class="ticket-row">
+              <div class="ticket-info-group">
+                <span class="info-label">Data</span>
+                <strong class="info-value" [class.empty]="!novaConsulta.data">
+                  {{ novaConsulta.data ? (novaConsulta.data | date:'dd/MM/yyyy') : '--/--/----' }}
+                </strong>
+              </div>
+              <div class="ticket-info-group">
+                <span class="info-label">Horário</span>
+                <strong class="info-value text-blue" [class.empty]="!novaConsulta.horario">
+                  {{ novaConsulta.horario || '--:--' }}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="ticket-divider">
+            <div class="notch left"></div>
+            <div class="dash-line"></div>
+            <div class="notch right"></div>
+          </div>
+
+          <div class="ticket-bottom">
+            <div class="barcode">
+              <span>|| | | ||| | || | | |||| | ||| |</span>
+              <small>{{ usuario.nome }}</small>
+            </div>
+            
+            <button class="btn-confirm-ticket" (click)="confirmarAgendamento()" [disabled]="salvando">
+              @if (salvando) {
+                <mat-spinner diameter="20" color="accent"></mat-spinner>
+              } @else {
+                <span>Confirmar Agendamento</span> <mat-icon>check_circle</mat-icon>
+              }
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

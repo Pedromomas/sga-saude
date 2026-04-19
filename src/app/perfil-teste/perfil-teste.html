@@ -1,0 +1,170 @@
+<mat-toolbar class="glass-navbar fade-in-down">
+  <div class="navbar-left">
+    <div class="logo-area" routerLink="/dashboard-teste">
+      <div class="logo-emblem">
+         <mat-icon class="logo-icon">health_and_safety</mat-icon>
+         <div class="glow-effect"></div>
+      </div>
+      <span class="logo-text">SGA <span class="text-gradient">Saúde</span></span>
+    </div>
+  </div>
+  
+  <div class="navbar-center">
+    <h2 class="page-title">Configurações da Conta</h2>
+  </div>
+  
+  <div class="navbar-right">
+    <div class="nav-actions">
+      <button mat-icon-button class="btn-voltar" routerLink="/dashboard-teste" title="Voltar ao Dashboard">
+        <mat-icon>dashboard</mat-icon>
+      </button>
+      <div class="divider-y"></div>
+      <button class="user-chip active">
+        <div class="avatar-box">
+          @if (usuario.photoURL) {
+            <img [src]="usuario.photoURL" class="nav-avatar-img">
+          } @else {
+            {{ primeiroNome.charAt(0) }}
+          }
+          <span class="dot-online"></span>
+        </div>
+        <div class="user-info-mini">
+          <span class="name-text">Meu Perfil</span>
+          <span class="status-text">Paciente VIP</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div class="profile-bg">
+  <div class="max-width-wrapper">
+    
+    @if (loading) {
+      <div class="loading-state fade-in-up">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Carregando sua identidade...</p>
+      </div>
+    } @else {
+      
+      <div class="profile-grid fade-in-up delay-1">
+        
+        <div class="profile-sidebar">
+          <div class="premium-box user-card-master hover-float">
+            <div class="cover-photo">
+              <div class="overlay"></div>
+            </div>
+            <div class="avatar-container">
+              <div class="avatar-circle">
+                @if (uploadingPhoto) {
+                  <mat-spinner diameter="30" color="accent"></mat-spinner>
+                } @else if (usuario.photoURL) {
+                  <img [src]="usuario.photoURL" class="profile-image-large">
+                } @else {
+                  <span class="avatar-letter">{{ primeiroNome.charAt(0) }}</span>
+                }
+                
+                <button class="btn-edit-photo" title="Alterar Foto" (click)="triggerFileInput()" [disabled]="uploadingPhoto">
+                  <mat-icon>photo_camera</mat-icon>
+                </button>
+                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+              </div>
+            </div>
+            
+            <div class="user-details">
+              <h1>{{ usuario.nomeCompleto || 'Adicione seu nome' }}</h1>
+              <p class="user-email">{{ usuario.email }}</p>
+              
+              <div class="badge-vip">
+                <mat-icon>verified</mat-icon>
+                <span>Plano Premium Ativo</span>
+              </div>
+            </div>
+            
+            <div class="quick-stats">
+              <div class="stat-item">
+                <span class="stat-value">02</span>
+                <span class="stat-label">Consultas</span>
+              </div>
+              <div class="divider-x"></div>
+              <div class="stat-item">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Protegido</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-content">
+          <div class="premium-box form-section hover-float delay-2">
+            <div class="section-header">
+              <div class="header-icon"><mat-icon>person</mat-icon></div>
+              <div class="header-texts">
+                <h2>Dados Pessoais</h2>
+                <p>Mantenha suas informações atualizadas para um melhor atendimento.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              
+              <div class="input-group">
+                <label>Nome Completo</label>
+                <div class="input-wrapper">
+                  <mat-icon>badge</mat-icon>
+                  <input type="text" [(ngModel)]="usuario.nomeCompleto" placeholder="Seu nome completo">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label class="locked-label">CPF <span class="locked-badge"><mat-icon>lock</mat-icon> Apenas Leitura</span></label>
+                <div class="input-wrapper locked-wrapper">
+                  <mat-icon>fingerprint</mat-icon>
+                  <input type="text" [value]="usuario.cpf" readonly title="O CPF não pode ser alterado por segurança">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label>Data de Nascimento</label>
+                <div class="input-wrapper">
+                  <mat-icon>cake</mat-icon>
+                  <input type="date" [(ngModel)]="usuario.dataNascimento">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label>Celular</label>
+                <div class="input-wrapper">
+                  <mat-icon>smartphone</mat-icon>
+                  <input type="tel" [(ngModel)]="usuario.telefone" placeholder="(21) 90000-0000">
+                </div>
+              </div>
+
+              <div class="input-group full-width">
+                <label>CEP (Endereço)</label>
+                <div class="input-wrapper">
+                  <mat-icon>map</mat-icon>
+                  <input type="text" [(ngModel)]="usuario.cep" placeholder="00000-000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-footer fade-in-up delay-3">
+            <button class="btn-ghost-danger">
+              <mat-icon>lock_reset</mat-icon> Redefinir Senha
+            </button>
+            
+            <button class="btn-gradient-success" (click)="salvarPerfil()" [disabled]="salvando || uploadingPhoto">
+              @if (salvando) {
+                <mat-spinner diameter="16" color="accent"></mat-spinner> Salvando...
+              } @else {
+                <mat-icon>save</mat-icon> Salvar Alterações
+              }
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+  </div>
+</div>

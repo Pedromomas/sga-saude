@@ -1,0 +1,45 @@
+<div class="login-bg">
+  <mat-card class="login-card">
+    <div class="sus-strip"></div>
+
+    <mat-card-header class="header-center">
+      <div class="logo-circle">
+        <mat-icon>local_hospital</mat-icon>
+      </div>
+      <mat-card-title class="sga-title">SGA Saúde</mat-card-title>
+      <mat-card-subtitle>Acesso restrito a pacientes e servidores</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="login-form">
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail cadastrado</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
+          <input matInput placeholder="Digite seu e-mail" [(ngModel)]="emailDigitado" name="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Senha de acesso</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input matInput type="password" placeholder="Sua senha" [(ngModel)]="senhaDigitada" name="senha">
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="action-buttons">
+      <button mat-raised-button class="login-btn" (click)="fazerLogin()">
+        Entrar no Sistema
+        <mat-icon iconPositionEnd>login</mat-icon>
+      </button>
+      
+      <button mat-button type="button" class="forgot-btn" (click)="esqueciSenha()">
+  Esqueci minha senha
+</button>
+
+      <button mat-stroked-button color="primary" style="width: 100%; border-radius: 8px;" routerLink="/cadastro">
+        Criar nova conta
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

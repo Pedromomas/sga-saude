@@ -1,0 +1,96 @@
+.login-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* Fundo degradê cinza/azul bem clarinho estilo app hospitalar */
+  background: linear-gradient(135deg, #e0eaf5 0%, #f4f7f6 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  overflow: hidden; /* Corta as pontas da faixinha do SUS pra ficar redondo */
+  box-shadow: 0 10px 30px rgba(0, 74, 141, 0.15) !important;
+  padding: 0 0 20px 0;
+}
+
+/* A faixinha estilo Gov.br / SUS (Azul, Verde, Amarelo) */
+.sus-strip {
+  height: 8px;
+  width: 100%;
+  background: linear-gradient(90deg, #004A8D 33%, #009688 33%, #009688 66%, #FFC107 66%);
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 30px;
+  margin-bottom: 20px;
+}
+
+.logo-circle {
+  background-color: #004A8D; /* Azul SUS/Gov */
+  color: white;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+
+  mat-icon {
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.sga-title {
+  font-size: 26px !important;
+  font-weight: 700;
+  color: #004A8D;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+/* Estilizando os botões */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 36px 0 36px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 24px 0 !important;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #004A8D !important;
+  color: white !important;
+}
+
+.forgot-btn {
+  color: #004A8D !important;
+  width: 100%;
+}
+
+/* Afasta os ícones de dentro do input do texto */
+mat-icon[matPrefix] {
+  margin-right: 10px;
+  color: #777;
+}

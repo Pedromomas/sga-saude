@@ -1,0 +1,115 @@
+<div class="landing-wrapper">
+  
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  
+  <header class="health-hotbar fade-in-down" [class.scrolled]="isScrolled">
+    <div class="logo-area">
+      <div class="logo-icon"><mat-icon>health_and_safety</mat-icon></div>
+      <span class="logo-text">SGA <span class="text-gradient">Saúde</span></span>
+    </div>
+    
+    <nav class="nav-links">
+      <a class="nav-link" (click)="rolarParaServicos()">
+        Como Funciona
+        <span class="underline"></span>
+      </a>
+      <a routerLink="/login-teste" class="nav-link">
+        Entrar
+        <span class="underline"></span>
+      </a>
+      <a routerLink="/cadastro-teste" class="btn-health-glow">
+        Cadastre-se <mat-icon>favorite</mat-icon>
+      </a>
+    </nav>
+    
+    <div class="scroll-progress-line"></div>
+  </header>
+
+  <main class="hero-section fade-in-up delay-1">
+    <div class="hero-content">
+      <div class="badge-sus">
+        <span class="pulse-health-dot"></span> 100% Integrado ao SUS Digital
+      </div>
+      
+      <h1 class="hero-title">
+        Saúde Pública Inteligente,<br>
+        <span class="gradient-text dynamic-text" [class.fade-out]="animarTexto">
+          {{ fraseAtual }}
+        </span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Chega de filas de madrugada. Agende suas consultas, acompanhe seus exames e receba notificações de vagas antecipadas com tranquilidade e conforto.
+      </p>
+      
+      <div class="hero-actions">
+        <button class="btn-health-primary breath-anim" routerLink="/login-teste">
+          Acessar meu Painel <mat-icon>arrow_forward</mat-icon>
+        </button>
+        <button class="btn-health-secondary" (click)="rolarParaServicos()">
+          <mat-icon>play_circle</mat-icon> Conhecer o Sistema
+        </button>
+      </div>
+
+      <div class="trust-indicators">
+        <div class="trust-item"><mat-icon>verified_user</mat-icon> Dados Seguros</div>
+        <div class="trust-item"><mat-icon>update</mat-icon> Atualização em Tempo Real</div>
+        <div class="trust-item"><mat-icon>volunteer_activism</mat-icon> Cuidado Humanizado</div>
+      </div>
+    </div>
+
+    <div class="hero-visual glass-panel hover-float delay-2">
+      <div class="mockup-header">
+        <div class="dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+        <span class="mockup-title">Painel do Paciente</span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-card floating-card-1">
+          <div class="icon-m"><mat-icon>calendar_month</mat-icon></div>
+          <div class="lines"><div class="line w-100"></div><div class="line w-60"></div></div>
+          <div class="status green">Confirmado</div>
+        </div>
+        <div class="mockup-card floating-card-2">
+          <div class="icon-m" style="background: #fef2f2; color: #ef4444;"><mat-icon>campaign</mat-icon></div>
+          <div class="lines"><div class="line w-80"></div><div class="line w-40"></div></div>
+          <div class="status orange">Aviso Urgente</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section id="servicos" class="features-section fade-in-up delay-3">
+    <div class="section-header">
+      <h2>Como o SGA Saúde cuida de você</h2>
+      <p>Esqueça a burocracia. Desenhamos uma experiência pensada para o seu bem-estar.</p>
+    </div>
+
+    <div class="bento-grid-features">
+      <div class="feature-card f-large glass-panel hover-float">
+        <div class="f-icon bg-gradient-blue"><mat-icon>touch_app</mat-icon></div>
+        <h3>Agendamento Tranquilo</h3>
+        <p>Escolha a unidade, a especialidade e o horário. O sistema bloqueia vagas esgotadas automaticamente para evitar superlotação e filas.</p>
+      </div>
+
+      <div class="feature-card f-small glass-panel hover-float">
+        <div class="f-icon bg-gradient-green"><mat-icon>sync</mat-icon></div>
+        <h3>Fila Inteligente</h3>
+        <p>Alguém cancelou? O sistema encontra quem precisa da vaga e te avisa automaticamente no WhatsApp.</p>
+      </div>
+
+      <div class="feature-card f-small glass-panel hover-float">
+        <div class="f-icon bg-gradient-orange"><mat-icon>vaccines</mat-icon></div>
+        <h3>Caderneta Digital</h3>
+        <p>Histórico de vacinas, receitas e exames guardados com total segurança na palma da sua mão.</p>
+      </div>
+
+      <div class="feature-card f-small glass-panel hover-float">
+        <div class="f-icon bg-gradient-purple"><mat-icon>campaign</mat-icon></div>
+        <h3>Avisos Oficiais</h3>
+        <p>Fique sabendo de campanhas de vacinação e alertas da sua unidade em tempo real pelo painel.</p>
+      </div>
+    </div>
+  </section>
+
+</div>

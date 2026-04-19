@@ -1,0 +1,176 @@
+<div class="admin-wrapper" [class.emergency-mode]="protocoloEmergenciaAtivo">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo-box"><mat-icon>admin_panel_settings</mat-icon></div><h2>Portal SUS</h2><span class="badge" [ngClass]="nivelAcesso">{{ nivelAcesso }}</span></div>
+    <nav class="nav-menu">
+      <button [class.active]="abaAtiva === 'dashboard'" (click)="setAba('dashboard')"><mat-icon>insights</mat-icon> Visão Geral</button>
+      <button [class.active]="abaAtiva === 'fila'" (click)="setAba('fila')"><mat-icon>view_timeline</mat-icon> Fila em Tempo Real</button>
+      <button [class.active]="abaAtiva === 'repasse'" (click)="setAba('repasse')"><mat-icon>autorenew</mat-icon> Repasse de Vagas</button>
+      <button [class.active]="abaAtiva === 'mural'" (click)="setAba('mural')"><mat-icon>campaign</mat-icon> Gestão de Avisos</button>
+      <button *ngIf="podeVerEquipe()" [class.active]="abaAtiva === 'equipe'" (click)="setAba('equipe')"><mat-icon>shield_person</mat-icon> Gerenciar Staff</button>
+      <button *ngIf="nivelAcesso === 'supremo'" [class.active]="abaAtiva === 'config'" (click)="setAba('config')"><mat-icon>tune</mat-icon> Configurações Globais</button>
+    </nav>
+    <div class="sidebar-footer"><button class="btn-logout" (click)="sair()"><mat-icon>power_settings_new</mat-icon> Sair</button></div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div><h1>Sala de Comando</h1><p>Dados reais extraídos do Firebase Database</p></div>
+      <div class="test-controls">
+        <mat-icon>admin_panel_settings</mat-icon><span>Visão:</span>
+        <button (click)="mudarNivel('funcionario')" [class.active]="nivelAcesso === 'funcionario'">Func.</button>
+        <button (click)="mudarNivel('chefe')" [class.active]="nivelAcesso === 'chefe'">Chefe</button>
+        <button (click)="mudarNivel('supremo')" [class.active]="nivelAcesso === 'supremo'">Supremo</button>
+      </div>
+    </header>
+
+    <div class="loader-container" *ngIf="isLoading"><div class="spinner"></div></div>
+
+    <div class="content-area" *ngIf="!isLoading">
+
+      <div *ngIf="abaAtiva === 'dashboard'" class="fade-in">
+        <div class="stats-grid top-cards"><div class="stat-card"><div class="icon-wrap purple"><mat-icon>groups</mat-icon></div><div class="info"><h3>Pacientes Registrados</h3><h2>{{ stats.totalPacientesCadastrados }}</h2></div></div><div class="stat-card"><div class="icon-wrap blue"><mat-icon>calendar_month</mat-icon></div><div class="info"><h3>Total de Consultas</h3><h2>{{ stats.totalAgendamentos }}</h2></div></div><div class="stat-card"><div class="icon-wrap green"><mat-icon>trending_up</mat-icon></div><div class="info"><h3>Taxa de Sucesso</h3><h2>{{ taxaSucesso }}%</h2></div></div></div>
+        <div class="dashboard-columns"><div class="pizza-card glass-box"><h3>Distribuição de Agendamentos</h3><p class="subtitle">Análise completa do banco de dados.</p><div class="pizza-container"><div class="donut-chart" [style.background]="stringGraficoPizza"><div class="donut-inner"><span class="total-number">{{ stats.totalAgendamentos }}</span><span class="total-label">Total</span></div></div><div class="pizza-legend"><div class="legend-item"><div class="dot bg-green"></div><div class="legend-text"><strong>Atendidos:</strong> {{ stats.atendidos }}</div></div><div class="legend-item"><div class="dot bg-blue"></div><div class="legend-text"><strong>Em Atendimento:</strong> {{ stats.emAtendimento }}</div></div><div class="legend-item"><div class="dot bg-orange"></div><div class="legend-text"><strong>Aguardando:</strong> {{ stats.aguardando }}</div></div><div class="legend-item"><div class="dot bg-red"></div><div class="legend-text"><strong>Cancelados:</strong> {{ stats.cancelados }}</div></div></div></div></div><div class="system-health-column"><div class="glass-box sys-status"><h3>Status do Sistema</h3><div class="status-row"><mat-icon class="text-green">wifi</mat-icon> <span>Servidor Firebase: <strong>Online</strong></span></div><div class="status-row"><mat-icon class="text-blue">sync</mat-icon> <span>Sincronização: <strong>Tempo Real</strong></span></div><div class="status-row"><mat-icon class="text-orange">dns</mat-icon> <span>Banco de Dados: <strong>Estável</strong></span></div></div><div class="glass-box sys-activity"><h3>Resumo da Unidade</h3><p>O Portal SUS está operando com {{ stats.totalPacientesCadastrados }} pacientes cadastrados.</p><button class="btn-outline" (click)="setAba('fila')">Ir para Fila ao Vivo</button></div></div></div>
+      </div>
+
+      <div *ngIf="abaAtiva === 'fila'" class="fade-in">
+        <div class="resumo-dia glass-box"><div class="resumo-item"><mat-icon>assessment</mat-icon><div class="text"><span>{{ resumoAtual.titulo }}</span><h3>{{ resumoAtual.total }}</h3></div></div><div class="resumo-item green"><mat-icon>check_circle</mat-icon><div class="text"><span>Compareceram</span><h3>{{ resumoAtual.compareceu }}</h3></div></div><div class="resumo-item red"><mat-icon>cancel</mat-icon><div class="text"><span>Faltas / Cancelados</span><h3>{{ resumoAtual.faltou }}</h3></div></div></div>
+        <div class="filter-bar glass-box"><div class="filter-group"><span class="label"><mat-icon>event</mat-icon> Data:</span><button [class.active]="filtroData === 'hoje'" (click)="filtroData = 'hoje'">Hoje</button><button [class.active]="filtroData === 'todos'" (click)="filtroData = 'todos'">Histórico Completo</button></div><div class="filter-group"><span class="label"><mat-icon>filter_list</mat-icon> Status:</span><button [class.active]="filtroStatus === 'todos'" (click)="filtroStatus = 'todos'">Todos</button><button [class.active]="filtroStatus === 'aguardando'" (click)="filtroStatus = 'aguardando'">Pendentes</button><button [class.active]="filtroStatus === 'compareceu'" (click)="filtroStatus = 'compareceu'">Compareceu</button><button [class.active]="filtroStatus === 'faltou'" (click)="filtroStatus = 'faltou'">Faltas</button></div></div>
+        
+        <div class="queue-list">
+          <div class="empty-state" *ngIf="filaFiltrada.length === 0"><mat-icon>done_all</mat-icon><h3>Nenhuma ficha encontrada</h3><p>Altere os filtros acima para buscar mais resultados.</p></div>
+          
+          <div class="queue-card" *ngFor="let p of filaFiltrada">
+            <div class="card-content">
+              <div class="avatar"><mat-icon>person</mat-icon></div>
+              <div class="info">
+                <h4>{{ getNome(p) }}</h4>
+                <p class="details">{{ p.especialidade || p.servico || 'Especialidade Indefinida' }} | CPF: {{ getCpf(p) }}</p>
+                <div class="time-badge"><mat-icon>event_available</mat-icon> {{ formatarDataBR(p.data) }} {{ p.horario ? '- ' + p.horario : '' }}</div>
+              </div>
+            </div>
+            
+            <div class="card-actions">
+              <span class="status-pill" [ngClass]="getCorStatus(p.status)">{{ (p.status || 'Pendente') | uppercase }}</span>
+              
+              <div class="action-buttons" *ngIf="getCorStatus(p.status) === 'aguardando'">
+                <button class="btn-check" (click)="atualizarStatusAgendamento(p.id, 'compareceu')"><mat-icon>how_to_reg</mat-icon> Presente</button>
+                <button class="btn-close" (click)="atualizarStatusAgendamento(p.id, 'cancelada')"><mat-icon>person_off</mat-icon> Faltou</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="abaAtiva === 'repasse'" class="fade-in">
+        <div class="glass-box">
+          <div class="header-form">
+            <h3>Repasse de Vagas (Fila de Espera)</h3>
+            <p>Gerencie as vagas ociosas deixadas por cancelamentos ou faltas e convoque novos pacientes para preencher a agenda.</p>
+          </div>
+          
+          <div class="queue-list">
+            <div class="empty-state" *ngIf="vagasParaRepasse.length === 0">
+              <mat-icon>verified</mat-icon>
+              <h3>Nenhuma vaga ociosa no momento</h3>
+              <p>Não há cancelamentos recentes ou faltas para repassar. A agenda está preenchida.</p>
+            </div>
+            
+            <div class="queue-card" *ngFor="let vaga of vagasParaRepasse">
+              <div class="card-content">
+                <div class="avatar" style="background: #fef2f2; color: #ef4444;"><mat-icon>event_busy</mat-icon></div>
+                <div class="info">
+                  <h4>{{ vaga.especialidade || vaga.servico || 'Especialidade Indefinida' }} | {{ vaga.unidade }}</h4>
+                  <p class="details">Desistência/Falta de: {{ getNome(vaga) }}</p>
+                  <div class="time-badge"><mat-icon>event_available</mat-icon> {{ formatarDataBR(vaga.data) }} {{ vaga.horario ? '- ' + vaga.horario : '' }}</div>
+                </div>
+              </div>
+              <div class="card-actions" style="justify-content: center;">
+                <button class="btn-publish-glow" style="padding: 10px 20px; font-size: 13px;" (click)="abrirModalRepasse(vaga)">
+                  <mat-icon>sync</mat-icon> Encontrar Substitutos
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="abaAtiva === 'mural'" class="fade-in">
+        <div class="glass-box form-mural-premium"><div class="header-form"><h3>Criar Novo Comunicado Oficial</h3><p>O aviso aparecerá no aplicativo dos pacientes e expirará automaticamente.</p></div><div class="form-row flex-row"><div class="form-group flex-2"><label>Título do Aviso</label><input type="text" [(ngModel)]="novoAviso.titulo" placeholder="Ex: Campanha de Vacinação contra Gripe"></div><div class="form-group flex-1"><label>Ocultar aviso após:</label><select [(ngModel)]="novoAviso.validadeDias"><option [ngValue]="1">24 Horas</option><option [ngValue]="3">3 Dias</option><option [ngValue]="7">1 Semana</option><option [ngValue]="30">1 Mês</option></select></div></div><div class="form-row flex-row"><div class="form-group flex-1"><label>Ícone Representativo</label><div class="visual-picker"><button *ngFor="let item of iconesDisponiveis" class="picker-btn" [class.active]="novoAviso.icone === item.id" (click)="novoAviso.icone = item.id" [title]="item.nome"><mat-icon>{{ item.id }}</mat-icon></button></div></div><div class="form-group flex-1"><label>Cor de Destaque</label><div class="visual-picker"><button *ngFor="let item of coresDisponiveis" class="picker-btn color-btn" [class.active]="novoAviso.cor === item.hex" [style.backgroundColor]="item.hex" (click)="novoAviso.cor = item.hex" [title]="item.nome"><mat-icon *ngIf="novoAviso.cor === item.hex">check</mat-icon></button></div></div></div><div class="form-group"><label>Detalhes do Comunicado</label><textarea [(ngModel)]="novoAviso.desc" placeholder="Descreva o que está acontecendo..."></textarea></div><div class="form-footer"><button class="btn-publish-glow" (click)="salvarNovoAviso()" [disabled]="criandoAviso || !novoAviso.titulo || !novoAviso.desc"><mat-icon>campaign</mat-icon> {{ criandoAviso ? 'Publicando...' : 'Publicar no Sistema' }}</button></div></div>
+        <div class="mural-grid"><div class="empty-state" *ngIf="mural.length === 0" style="grid-column: 1 / -1;"><mat-icon>speaker_notes_off</mat-icon><h3>Mural Limpo</h3><p>Nenhum aviso ativo no momento.</p></div><div class="mural-card fade-in" *ngFor="let aviso of mural" [style.border-top-color]="aviso.cor"><div class="card-top"><div class="icon-circle" [style.background]="aviso.cor"><mat-icon>{{ aviso.icone }}</mat-icon></div><button class="btn-del-icon" (click)="deletarAviso(aviso.id)" title="Excluir imediatamente"><mat-icon>delete_outline</mat-icon></button></div><h4>{{ aviso.titulo }}</h4><p class="desc">{{ aviso.desc }}</p><div class="card-bottom"><span class="validity-badge"><mat-icon>schedule</mat-icon> {{ diasParaExpirar(aviso.dataExpiracao) }}</span></div></div></div>
+      </div>
+
+      <div *ngIf="abaAtiva === 'equipe'" class="fade-in">
+        <div class="glass-box form-staff"><div class="header-form"><h3>Adicionar Novo Colaborador</h3><p><strong>Nota técnica:</strong> Este painel gerencia a permissão no banco de dados.</p></div><div class="form-row flex-row"><div class="form-group flex-2"><label>Nome Completo do Servidor</label><input type="text" [(ngModel)]="novoStaff.nomeCompleto" placeholder="Ex: Dra. Ana Clara"></div><div class="form-group flex-2"><label>E-mail Corporativo</label><input type="email" [(ngModel)]="novoStaff.email" placeholder="ana.clara@sus.gov"></div></div><div class="form-row flex-row"><div class="form-group flex-1"><label>Unidade Base</label><select *ngIf="nivelAcesso === 'supremo'" [(ngModel)]="novoStaff.unidadeTrabalho"><ng-container *ngFor="let uni of unidadesDisponiveis"><option *ngIf="novoStaff.cargo === 'supremo' || uni !== 'Todas'" [value]="uni">{{ uni }}</option></ng-container></select><input *ngIf="nivelAcesso === 'chefe'" type="text" [value]="minhaUnidadeSimulada" disabled title="Sua unidade é fixa."></div><div class="form-group flex-1"><label>Nível de Acesso (RBAC)</label><select [(ngModel)]="novoStaff.cargo" (ngModelChange)="aoTrocarCargo()"><option value="funcionario">Funcionário (Ver fila e mural)</option><option value="chefe" *ngIf="nivelAcesso === 'supremo'">Chefe de Unidade</option><option value="supremo" *ngIf="nivelAcesso === 'supremo'">Administrador Supremo</option></select></div></div><div class="form-footer"><button class="btn-publish-glow" (click)="salvarNovoStaff()" [disabled]="criandoStaff || !novoStaff.nomeCompleto || !novoStaff.email || !novoStaff.unidadeTrabalho"><mat-icon>person_add</mat-icon> {{ criandoStaff ? 'Registrando...' : 'Cadastrar Colaborador' }}</button></div></div>
+        <div class="glass-box table-staff"><div class="header-table"><h3>Quadro de Funcionários Ativos</h3><p>Mostrando dados baseados no seu nível de permissão ({{ nivelAcesso | uppercase }}).</p></div><div class="table-responsive"><table class="premium-table"><thead><tr><th>Membro da Equipe</th><th>Cargo / Acesso</th><th>Unidade de Trabalho</th><th class="text-right">Ação</th></tr></thead><tbody><tr *ngFor="let membro of equipeFiltrada" class="fade-in-row"><td><div class="user-cell"><div class="avatar" [ngClass]="membro.cargo"><mat-icon>badge</mat-icon></div><div class="details"><strong>{{ membro.nomeCompleto || membro.nome || 'Sem Nome' }}</strong><span>{{ membro.email || 'Email não cadastrado' }}</span></div></div></td><td><span class="tag-cargo" [ngClass]="membro.cargo">{{ membro.cargo | uppercase }}</span></td><td>{{ membro.unidadeTrabalho || 'Acesso Global' }}</td><td class="text-right"><button class="btn-del-icon" (click)="removerStaff(membro.id, membro.cargo)" title="Revogar acesso"><mat-icon>person_remove</mat-icon></button></td></tr><tr *ngIf="equipeFiltrada.length === 0"><td colspan="4" class="empty-table-msg">Nenhum colaborador acessível para o seu nível.</td></tr></tbody></table></div></div>
+      </div>
+
+      <div *ngIf="abaAtiva === 'config'" class="fade-in">
+        <div class="config-columns">
+          <div class="column-stack">
+            <div class="glass-box config-card"><div class="header-form"><h3>Gestão de Unidades</h3><p>Cadastre os hospitais oficiais.</p></div><div class="inline-form"><input type="text" [(ngModel)]="novaConfigUnidade" placeholder="Ex: Hospital Getúlio Vargas"><button class="btn-add blue" (click)="adicionarConfiguracao('unidade')" [disabled]="!novaConfigUnidade"><mat-icon>add</mat-icon> Adicionar</button></div><div class="config-list"><div class="list-item" *ngFor="let u of listaUnidadesOficiais"><span>{{ u.nome }}</span><button class="btn-del-icon" (click)="deletarConfiguracao(u.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaUnidadesOficiais.length === 0">Nenhuma unidade cadastrada.</div></div></div>
+            <div class="glass-box config-card"><div class="header-form"><h3>Gestão de Especialidades</h3><p>Cadastre os serviços médicos.</p></div><div class="inline-form"><input type="text" [(ngModel)]="novaConfigEspecialidade" placeholder="Ex: Cardiologia Pediátrica"><button class="btn-add orange" (click)="adicionarConfiguracao('especialidade')" [disabled]="!novaConfigEspecialidade"><mat-icon>add</mat-icon> Adicionar</button></div><div class="config-list"><div class="list-item" *ngFor="let e of listaEspecialidadesOficiais"><span>{{ e.nome }}</span><button class="btn-del-icon" (click)="deletarConfiguracao(e.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaEspecialidadesOficiais.length === 0">Nenhuma especialidade.</div></div></div>
+          </div>
+          <div class="column-stack">
+            <div class="glass-box config-card"><div class="header-form"><h3>Vincular Agenda (App)</h3><p>Abra vagas no aplicativo.</p></div><div class="form-group-stack"><label>1. Unidade</label><select [(ngModel)]="novaAgendaUnidade"><option *ngFor="let u of listaUnidadesOficiais" [value]="u.nome">{{ u.nome }}</option></select></div><div class="form-group-stack"><label>2. Especialidade</label><select [(ngModel)]="novaAgendaEspecialidade"><option *ngFor="let e of listaEspecialidadesOficiais" [value]="e.nome">{{ e.nome }}</option></select></div><div class="form-group-stack"><label>3. Horários</label><input type="text" [(ngModel)]="novaAgendaHorarios" placeholder="08:00, 09:00"></div><div class="form-group-stack"><label>4. Vagas por Horário</label><input type="number" [(ngModel)]="novaAgendaVagas" min="1" placeholder="Ex: 2"></div><button class="btn-publish-glow full-width" (click)="adicionarAgenda()" [disabled]="!novaAgendaUnidade || !novaAgendaEspecialidade || !novaAgendaHorarios"><mat-icon>save</mat-icon> Salvar Agenda</button><div class="agenda-divider">Agendas Ativas</div><div class="config-list agenda-list"><div class="agenda-item" *ngFor="let a of listaAgendasOficiais"><div class="agenda-info"><strong>{{ a.especialidade }}</strong><span class="uni">📍 {{ a.unidade }}</span><span class="vagas">{{ a.vagasPorHora }} vagas | {{ a.horariosDisponiveis }}</span></div><button class="btn-del-icon" (click)="deletarConfiguracao(a.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaAgendasOficiais.length === 0">Nenhuma agenda.</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<ng-template #modalRepasse>
+  <div class="modal-repasse-wrapper fade-in">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <mat-icon style="color: #f59e0b;">sync</mat-icon>
+        <h2>Antecipar Vagas (Fila de Espera)</h2>
+      </div>
+      <button class="btn-close-modal" mat-dialog-close><mat-icon>close</mat-icon></button>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-desc">
+        A vaga de <strong>{{ vagaOriginal?.especialidade }}</strong> na unidade <strong>{{ vagaOriginal?.unidade }}</strong> está ociosa. 
+        Abaixo estão os pacientes que têm esta mesma consulta marcada para o futuro e podem ser antecipados.
+      </p>
+
+      <div class="substitutos-list">
+        <div class="substituto-card" *ngFor="let sub of pacientesSubstitutos">
+          
+          <div class="sub-info">
+            <div class="sub-avatar"><mat-icon>person</mat-icon></div>
+            <div class="sub-texts">
+              <strong>{{ getNome(sub) }}</strong>
+              <span class="sub-date">Marcado para: {{ formatarDataBR(sub.data) }}</span>
+              
+              <span class="badge-aguardando" *ngIf="statusNotificacao[sub.id]">
+                <mat-icon>schedule</mat-icon> Aguardando Resposta
+              </span>
+            </div>
+          </div>
+
+          <div class="sub-actions">
+            <button class="btn-contact confirm" *ngIf="statusNotificacao[sub.id]" (click)="confirmarRepasseVaga(sub)" title="Confirmar Vaga para este paciente">
+              <mat-icon>check</mat-icon>
+            </button>
+
+            <button class="btn-contact zap" (click)="chamarNoWhatsApp(sub)" title="Chamar no WhatsApp">
+              <mat-icon>chat</mat-icon>
+            </button>
+            <button class="btn-contact email" (click)="chamarNoEmail(sub)" title="Avisar por E-mail">
+              <mat-icon>mail</mat-icon>
+            </button>
+          </div>
+          
+        </div>
+        
+        <div class="empty-substitutos" *ngIf="pacientesSubstitutos.length === 0">
+          <mat-icon>sentiment_dissatisfied</mat-icon>
+          <p>Nenhum paciente na fila de espera para esta especialidade.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

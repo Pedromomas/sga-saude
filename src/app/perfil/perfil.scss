@@ -1,0 +1,130 @@
+/* A BARRA AZUL VOLTOU! */
+.sga-toolbar {
+  background-color: #0056b3 !important; 
+  button, mat-icon { color: white !important; }
+  span { margin-left: 10px; color: white; }
+}
+
+.perfil-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #eef2f6;
+  min-height: calc(100vh - 64px);
+}
+
+/* CARTÃO ARRUMADO (height: fit-content resolve o esticamento) */
+.perfil-card {
+  width: 100%;
+  max-width: 420px;
+  height: fit-content; /* <-- O Segredo pro cartão não ficar gigante */
+  padding-bottom: 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.loading-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  p { margin-top: 15px; color: #666; font-weight: bold; }
+}
+
+.card-header-bg {
+  height: 100px;
+  background: linear-gradient(135deg, #0056b3 0%, #009688 100%);
+}
+
+.avatar-container {
+  margin-top: -50px;
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-circle {
+  width: 90px;
+  height: 90px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  mat-icon { font-size: 50px; width: 50px; height: 50px; color: #0056b3; }
+}
+
+.perfil-info {
+  padding: 20px;
+}
+
+.nome-destaque { margin: 10px 0 5px 0; color: #333; font-weight: bold; }
+.email-info { color: #777; margin-bottom: 25px; }
+
+.info-box {
+  margin-bottom: 12px;
+  padding: 12px 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+  background-color: #fcfcfc;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+  mat-icon { transform: scale(1.2); }
+}
+
+.text-data {
+  display: flex;
+  flex-direction: column;
+  .label { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 2px;}
+  .value { font-size: 15px; font-weight: bold; color: #444; }
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px;
+  button { width: 100%; }
+}
+/* ========================================================
+   🔥 BARRA FIXA (STICKY NAVBAR)
+   ======================================================== */
+mat-toolbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ========================================================
+   🎨 SCROLLBAR MODERNA E ROLAGEM SUAVE
+   ======================================================== */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #c1c1c1; 
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #3F51B5; 
+}
+
+/* Garante o comportamento suave nas caixas de conteúdo */
+.dashboard-container, .perfil-container, .agendamento-container {
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain;
+}

@@ -1,0 +1,248 @@
+<mat-toolbar class="glass-navbar fade-in-down">
+  <div class="navbar-left">
+    <div class="logo-area" routerLink="/dashboard-teste">
+      <div class="logo-emblem">
+         <mat-icon class="logo-icon">health_and_safety</mat-icon>
+         <div class="glow-effect"></div>
+      </div>
+      <span class="logo-text">SGA <span class="text-gradient">Saúde</span></span>
+    </div>
+  </div>
+  
+  <div class="navbar-center">
+    <div class="search-capsule" style="position: relative;">
+      <mat-icon>search</mat-icon>
+      <input type="text" placeholder="O que você precisa hoje? (Ex: Perfil, Médico...)" [(ngModel)]="termoBusca" (input)="buscarNoSistema()" (focus)="buscarNoSistema()" (blur)="fecharBusca()">
+      @if (mostrarResultados) {
+        <div class="search-dropdown fade-in-down">
+          <div class="dropdown-header-search">Sugestões de Acesso Rápido</div>
+          @for (item of resultadosBusca; track item.rota) {
+            <div class="search-item" (click)="irParaRota(item.rota)">
+              <div class="icon-box"><mat-icon>{{ item.icone }}</mat-icon></div>
+              <span>{{ item.titulo }}</span>
+              <mat-icon class="arrow">arrow_forward</mat-icon>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  
+  <div class="navbar-right">
+    <div class="nav-actions">
+      
+      <div class="notification-wrapper">
+        <button mat-icon-button class="btn-notification" (click)="toggleNotificacoes()">
+          <mat-icon>notifications_none</mat-icon>
+          <span class="dot-red" *ngIf="avisosDoMural.length > 0"></span>
+        </button>
+
+        @if (mostrarNotificacoes) {
+          <div class="notification-dropdown">
+            <div class="dropdown-header">
+              <h3>Avisos Oficiais</h3>
+              <button class="btn-close-dropdown" (click)="mostrarNotificacoes = false"><mat-icon>close</mat-icon></button>
+            </div>
+            <div class="dropdown-body">
+              @for (aviso of avisosDoMural; track aviso.id) {
+                <div class="modern-alert" [style.border-left-color]="aviso.cor">
+                  <div class="alert-icon" [style.color]="aviso.cor" [style.background]="aviso.cor + '20'">
+                    <mat-icon>{{ aviso.icone || 'info' }}</mat-icon>
+                  </div>
+                  <div class="alert-content">
+                    <strong>{{ aviso.titulo }}</strong>
+                    <p>{{ aviso.desc }}</p>
+                  </div>
+                </div>
+              } @empty {
+                <div class="modern-alert" style="border-left-color: #3b82f6;">
+                  <div class="alert-icon" style="color: #3b82f6; background: #eff6ff;"><mat-icon>info</mat-icon></div>
+                  <div class="alert-content">
+                    <strong>Tudo tranquilo!</strong>
+                    <p>Você não tem nenhum aviso oficial no momento.</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="divider-y"></div>
+      <button class="user-chip" routerLink="/perfil-teste">
+        <div class="avatar-box">
+          @if (photoURL) { <img [src]="photoURL" class="nav-avatar-img"> } @else { {{ nomeUsuario.charAt(0) }} }
+          <span class="dot-online"></span>
+        </div>
+        <div class="user-info-mini">
+          <span class="name-text">Meu Perfil</span>
+          <span class="status-text">Paciente VIP</span>
+        </div>
+      </button>
+      <button mat-icon-button class="btn-sair" routerLink="/login" title="Sair"><mat-icon>logout</mat-icon></button>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div class="dashboard-bg">
+  <div class="max-width-wrapper">
+    
+    <div class="welcome-header fade-in-up delay-1">
+      @if (loadingNome) {
+        <div class="loading-name"><mat-spinner diameter="20"></mat-spinner><span>Sincronizando...</span></div>
+      } @else {
+        <h1 class="welcome-text">{{ saudacao }}, <span class="text-gradient">{{ nomeUsuario }}</span>! 👋<br><span class="welcome-subtext">Sua saúde está em dia. Acompanhe seus serviços.</span></h1>
+      }
+    </div>
+
+    <div class="top-metrics-grid fade-in-up delay-2">
+      <div class="premium-box metric-card card-blue hover-float">
+        <div class="icon-wrapper"><mat-icon>calendar_month</mat-icon></div>
+        <div class="info"><h3>{{ meusAgendamentos.length }}</h3><p>Consultas Ativas</p></div>
+      </div>
+      <div class="premium-box metric-card card-orange hover-float">
+        <div class="icon-wrapper"><mat-icon>campaign</mat-icon></div>
+        <div class="info"><h3>{{ avisosDoMural.length }}</h3><p>Avisos Oficiais</p></div>
+      </div>
+      <div class="premium-box metric-card card-green hover-float">
+        <div class="icon-wrapper"><mat-icon>verified_user</mat-icon></div>
+        <div class="info"><h3 class="text-green">Em dia</h3><p>Status de Vacinação</p></div>
+      </div>
+    </div>
+
+    <div class="main-dashboard-grid fade-in-up delay-3">
+      
+      <div class="left-panel">
+        <div class="premium-box board-card">
+          <div class="board-header">
+            <div class="header-titles">
+              <h2>Meus Agendamentos</h2>
+              <p>Histórico completo e próximas marcações</p>
+            </div>
+            <button class="btn-gradient-blue" routerLink="/agendamento-teste">
+              <mat-icon>add</mat-icon> Nova Consulta
+            </button>
+          </div>
+
+          <div class="appointments-scroll-area">
+            <div class="appointments-list">
+              @for (agenda of meusAgendamentos; track agenda.id) {
+                <div class="appt-card-super-premium">
+                  <div class="status-glow" [class.glow-green]="agenda.status === 'Confirmada'" [class.glow-red]="agenda.status === 'Cancelada'" [class.glow-blue]="agenda.status !== 'Confirmada' && agenda.status !== 'Cancelada'"></div>
+                  
+                  <div class="appt-main-info">
+                    <div class="icon-circle" [class.bg-green-light]="agenda.status === 'Confirmada'" [class.bg-gray-light]="agenda.status === 'Cancelada'">
+                      <mat-icon>{{ agenda.status === 'Confirmada' ? 'check_circle' : (agenda.status === 'Cancelada' ? 'cancel' : 'schedule') }}</mat-icon>
+                    </div>
+                    <div>
+                      <h4>{{ agenda.especialidade }}</h4>
+                      <span class="unidade-text"><mat-icon>location_on</mat-icon> {{ agenda.unidade }}</span>
+                    </div>
+                  </div>
+
+                  <div class="appt-date-block">
+                    <div class="calendar-icon-mini"><mat-icon>event</mat-icon></div>
+                    <div class="date-texts">
+                      <span class="date-val">{{ formatarDataBR(agenda.data) }}</span>
+                      <span class="date-label">Data</span>
+                    </div>
+                  </div>
+
+                  <div class="appt-status-block">
+                    @if (agenda.status === 'Confirmada') {
+                      <span class="pill pill-green">Confirmada</span>
+                    } @else if (agenda.status === 'Cancelada') {
+                      <span class="pill pill-gray">Cancelada</span>
+                    } @else {
+                      <span class="pill pill-blue">Aguardando</span>
+                    }
+                  </div>
+
+                  <div class="appt-actions-block">
+                    @if (agenda.status === 'Confirmada') {
+                      <button class="btn-ghost-danger" (click)="abrirModalDeCancelamento(agenda.id)">Cancelar</button>
+                    } @else if (agenda.status === 'Cancelada') {
+                      <button class="btn-ghost-primary" routerLink="/agendamento-teste">Reagendar</button>
+                      <button class="btn-trash-modern" (click)="excluirConsulta(agenda.id)"><mat-icon>delete_sweep</mat-icon></button>
+                    } @else {
+                      <button class="btn-ghost-primary" routerLink="/preparo">Preparo</button>
+                    }
+                  </div>
+                </div>
+
+              } @empty {
+                <div class="empty-state-modern">
+                  <div class="empty-icon-wrapper"><mat-icon>event_busy</mat-icon></div>
+                  <h3>Agenda Livre</h3>
+                  <p>Você não tem nenhuma consulta marcada no momento.</p>
+                  <button class="btn-gradient-blue" routerLink="/agendamento-teste">Marcar primeira consulta</button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="vax-digital-card hover-float">
+          <div class="vax-header">
+            <mat-icon class="vax-icon-bg">vaccines</mat-icon>
+            <div class="status-indicator-pulse"><div class="pulse-dot"></div><span>Protegido</span></div>
+          </div>
+          <div class="vax-body">
+            <div class="vax-texts">
+              <h2>Status em Dia</h2>
+              <p>Última dose: 15/01/2026</p>
+            </div>
+            <div class="vax-progress-container">
+              <div class="vax-progress-bar"><div class="vax-progress-fill"></div></div>
+              <span class="vax-percent">100%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="premium-box bentogrid-widget">
+          <h3 class="widget-title">Acesso Rápido</h3>
+          <div class="bento-grid">
+            <div class="bento-item bento-primary" routerLink="/agendamento-teste">
+              <div class="icon-circle-bg"><mat-icon>add</mat-icon></div><span>Nova Consulta</span>
+            </div>
+            <div class="bento-item" routerLink="/exames"><mat-icon>science</mat-icon><span>Ver Exames</span></div>
+            <div class="bento-item" routerLink="/telemedicina"><mat-icon>videocam</mat-icon><span>Plantão Virtual</span></div>
+            <div class="bento-item" routerLink="/receitas"><mat-icon>description</mat-icon><span>Receitas</span></div>
+          </div>
+        </div>
+
+        <div class="premium-box ouvidoria-card">
+          <div class="ouvidoria-content">
+            <div class="ouvidoria-icon"><mat-icon>headset_mic</mat-icon></div>
+            <div class="ouvidoria-text">
+              <h3>Ouvidoria SUS</h3>
+              <p>Elogios ou reclamações?</p>
+            </div>
+            <div class="ouvidoria-number"><span>Disque</span><strong>136</strong></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalCancelamento>
+  <div class="premium-modal-wrapper fade-in-up">
+    
+    <div class="modal-icon-warning">
+      <mat-icon>warning_amber</mat-icon>
+    </div>
+    
+    <h2 class="modal-title">Atenção, {{ nomeUsuario }}!</h2>
+    <p class="modal-text">Tem certeza que deseja cancelar sua consulta?<br>Sua vaga será repassada para outro paciente da fila de espera.</p>
+
+    <div class="modal-actions">
+      <button class="btn-desistir" mat-dialog-close>Desistir</button>
+      <button class="btn-liberar" (click)="cancelarConsulta()">Sim, liberar vaga</button>
+    </div>
+    
+  </div>
+</ng-template>

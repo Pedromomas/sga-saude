@@ -1,0 +1,67 @@
+<div class="super-login-container">
+  <div class="ambient-light light-1"></div>
+  <div class="ambient-light light-2"></div>
+  <div class="ambient-light light-3"></div>
+
+  <div class="glass-panel enter-anim">
+    
+    <div class="panel-header">
+      <div class="brand-icon">
+        <mat-icon>local_hospital</mat-icon>
+      </div>
+      <h2>Portal SUS</h2>
+      <p>Gestão Premium de Agendamentos</p>
+    </div>
+
+    <div class="form-wrapper">
+      
+      <div class="input-modern">
+        <mat-icon class="prefix-icon">alternate_email</mat-icon>
+        <input type="email" [(ngModel)]="email" placeholder="E-mail institucional" [disabled]="isLoading">
+        <div class="focus-bar"></div>
+      </div>
+
+      <div class="input-modern">
+        <mat-icon class="prefix-icon">lock_outline</mat-icon>
+        <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Sua senha secreta" [disabled]="isLoading">
+        
+        <button class="btn-eye" (click)="toggleSenha()" type="button" tabindex="-1">
+          <mat-icon>{{ mostrarSenha ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <div class="focus-bar"></div>
+      </div>
+
+      <div class="form-options">
+        <label class="custom-checkbox">
+          <input type="checkbox">
+          <span class="checkmark"><mat-icon>check</mat-icon></span>
+          <span>Lembrar-me</span>
+        </label>
+        <a class="text-link" (click)="recuperarSenha()">Esqueceu a senha?</a>
+      </div>
+
+      <div class="error-alert" *ngIf="erro">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ erro }}</span>
+      </div>
+
+      <div class="success-alert" *ngIf="mensagemSucesso">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ mensagemSucesso }}</span>
+      </div>
+
+      <button class="btn-glow" (click)="logar()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Acessar Sistema</span>
+        <span *ngIf="isLoading" class="loader"></span>
+        <mat-icon *ngIf="!isLoading" class="arrow-icon">arrow_right_alt</mat-icon>
+      </button>
+
+    </div>
+
+    <div class="panel-footer">
+      <div class="divider"><span>NOVO POR AQUI?</span></div>
+      <button class="btn-outline" (click)="irParaCadastro()">Criar uma conta</button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,109 @@
+<div class="super-cadastro-container">
+  <div class="confetti-container" id="confettiEffect"></div>
+
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <div class="glass-panel enter-anim" id="cadastroCard">
+    
+    <div class="panel-header">
+      <div class="brand-emblem">
+        <mat-icon>local_hospital</mat-icon>
+      </div>
+      <h2>Criar Conta Premium</h2>
+      <p>Preencha os dados para acessar o Portal SUS</p>
+    </div>
+
+    <div class="form-grid">
+      
+      <div class="input-field-premium col-full" [ngClass]="{'field-valid': nome.length > 5}">
+        <mat-icon class="field-icon">person_outline</mat-icon>
+        <input type="text" [(ngModel)]="nome" placeholder="Nome Completo Institucional">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium" [ngClass]="{'field-valid': cpf.length === 11}">
+        <mat-icon class="field-icon">badge</mat-icon>
+        <input type="text" [(ngModel)]="cpf" (ngModelChange)="formatarCPF($event)" placeholder="CPF (Apenas números)" maxlength="14">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium" [ngClass]="{'field-valid': dataNascimento}">
+        <mat-icon class="field-icon">cake</mat-icon>
+        <input type="date" [(ngModel)]="dataNascimento" title="Sua data de nascimento">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium" [ngClass]="{'field-valid': telefone.length >= 10}">
+        <mat-icon class="field-icon">phone_android</mat-icon>
+        <input type="tel" [(ngModel)]="telefone" (ngModelChange)="formatarTelefone($event)" placeholder="WhatsApp / Telefone" maxlength="15">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium opcional" [ngClass]="{'field-valid': cartaoSus.length > 5}">
+        <mat-icon class="field-icon">health_and_safety</mat-icon>
+        <input type="text" [(ngModel)]="cartaoSus" placeholder="Cartão SUS (Opcional)">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="section-title col-full"><span>Endereço Residencial</span></div>
+
+      <div class="input-field-premium cep-group" [ngClass]="{'field-valid': cep.length === 8}">
+        <mat-icon class="field-icon">map</mat-icon>
+        <input type="text" [(ngModel)]="cep" (blur)="buscarCep()" placeholder="Seu CEP" maxlength="9">
+        <mat-icon *ngIf="buscandoCep" class="cep-loader">autorenew</mat-icon>
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium" [ngClass]="{'field-valid': numero.length > 0}">
+        <mat-icon class="field-icon">home</mat-icon>
+        <input type="text" [(ngModel)]="numero" placeholder="Número">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium col-full locked" *ngIf="rua">
+        <mat-icon class="field-icon">pin_drop</mat-icon>
+        <input type="text" [value]="rua + ' - ' + bairro + ', ' + cidade + ' - ' + uf" disabled>
+      </div>
+
+      <div class="section-title col-full"><span>Dados de Acesso</span></div>
+
+      <div class="input-field-premium" [ngClass]="{'field-valid': email.includes('@')}">
+        <mat-icon class="field-icon">alternate_email</mat-icon>
+        <input type="email" [(ngModel)]="email" placeholder="E-mail Institucional">
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="input-field-premium">
+        <mat-icon class="field-icon">lock_open</mat-icon>
+        <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Crie uma Senha Forte">
+        <button class="btn-eye" (click)="toggleSenha()" type="button" tabindex="-1">
+          <mat-icon>{{ mostrarSenha ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <div class="focus-underline"></div>
+      </div>
+
+      <div class="password-strength-bar col-full" *ngIf="senha">
+        <div class="strength-fill" [ngClass]="getForcaSenha()"></div>
+      </div>
+
+    </div> <div class="alert-box error" *ngIf="erro">
+      <mat-icon>error_outline</mat-icon> <span>{{ erro }}</span>
+    </div>
+    <div class="alert-box success" *ngIf="mensagemSucesso">
+      <mat-icon>verified</mat-icon> <span>{{ mensagemSucesso }}</span>
+    </div>
+
+    <button class="btn-magnetic-glow" (click)="cadastrar()" [disabled]="isLoading" id="btnFinalizar">
+      <span *ngIf="!isLoading">Finalizar Cadastro Seguro</span>
+      <span *ngIf="isLoading" class="loader-spinner"></span>
+      <mat-icon *ngIf="!isLoading">fingerprint</mat-icon>
+    </button>
+
+    <div class="panel-footer">
+      <div class="footer-divider"><span>JÁ POSSUI CONTA?</span></div>
+      <button class="btn-outline-muted" (click)="voltarParaLogin()">Voltar para o Login</button>
+    </div>
+
+  </div>
+</div>

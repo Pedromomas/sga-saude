@@ -1,0 +1,213 @@
+/* ==========================================================================
+   💎 1. SISTEMA DE VARIÁVEIS SUPER PREMIUM E COMPACTO
+   ========================================================================== */
+:host {
+  --bg-app: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --surface-card: rgba(255, 255, 255, 0.98); 
+  --surface-glass: rgba(255, 255, 255, 0.95);
+  
+  --primary: #2563eb; --primary-dark: #1e3a8a; --primary-light: #eff6ff;
+  --danger: #ef4444; --success: #10b981; --success-dark: #059669;
+  --text-main: #0f172a; --text-muted: #64748b; --border-light: #e2e8f0;
+  
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04); 
+  --shadow-md: 0 4px 10px -2px rgba(15, 23, 42, 0.06); 
+  --shadow-float: 0 10px 18px -4px rgba(15, 23, 42, 0.1);
+  --inner-glow: inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+  --glass-shine: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.6) 50%, transparent 80%);
+}
+
+* { box-sizing: border-box; }
+::ng-deep { body, html { background: #e2e8f0 !important; margin: 0; padding: 0; font-family: 'Inter', sans-serif;} }
+
+.schedule-bg { background: var(--bg-app); min-height: 100vh; padding: 16px 12px; overflow-x: hidden; }
+.max-width-wrapper { max-width: 1200px; margin: 0 auto; width: 100%; }
+
+/* ==========================================================================
+    NAVBAR ARTIÍSTICA E "GLASS" 
+   ========================================================================== */
+::ng-deep .glass-navbar {
+  background: var(--surface-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  height: 52px !important;
+  position: sticky !important; top: 0; z-index: 1000;
+  padding: 0 20px !important;
+  box-shadow: 0 2px 6px 0 rgba(15, 23, 42, 0.03) !important;
+  display: grid !important; grid-template-columns: 1fr auto 1fr !important; align-items: center;
+}
+
+::ng-deep .navbar-left { display: flex; align-items: center; gap: 8px;}
+::ng-deep .navbar-center { display: flex; justify-content: center; width: 100%; min-width: 320px; }
+::ng-deep .navbar-right { display: flex; align-items: center; justify-content: flex-end; height: 100%; }
+
+::ng-deep .logo-area { display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+::ng-deep .logo-emblem { position: relative; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); overflow: hidden; mat-icon { font-size: 16px; width: 16px; height: 16px; z-index: 2;} }
+::ng-deep .logo-text { font-weight: 900; font-size: 15px; color: var(--text-main); }
+::ng-deep .text-gradient { background: linear-gradient(135deg, var(--primary), #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.page-title { margin: 0; font-size: 13px; font-weight: 800; color: var(--text-main); text-transform: uppercase;}
+
+::ng-deep .nav-actions { display: flex; align-items: center; gap: 8px; }
+::ng-deep .btn-voltar { color: var(--text-muted) !important; transition: 0.3s; transform: scale(0.85); &:hover { color: var(--primary) !important; background: var(--primary-light); transform: scale(1); } }
+::ng-deep .divider-y { width: 1px; height: 18px; background: var(--border-light); margin: 0 2px;}
+
+::ng-deep .user-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: transparent; border: none; text-align: left;
+  padding: 2px 10px 2px 2px; border-radius: 50px; cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover { background: rgba(0, 0, 0, 0.05); }
+
+  .avatar-box {
+    position: relative; width: 28px; height: 28px;
+    background: #0f172a; color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 11px;
+    .nav-avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  }
+
+  .user-info-mini {
+    display: flex; flex-direction: column;
+    .name-text { font-weight: 700; font-size: 11px; color: var(--text-main); margin-bottom: 1px;}
+    .status-text { font-size: 8px; font-weight: 900; color: var(--primary); letter-spacing: 0.5px; margin-top: -1px; }
+  }
+}
+
+/* ==========================================================================
+   ANIMAÇÕES DE ENTRADA
+   ========================================================================== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sweep { 0% { left: -100%; } 100% { left: 200%; } }
+@keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+.fade-in-down { animation: fadeInDown 0.4s ease forwards; }
+.fade-in-up { animation: fadeInUp 0.4s ease forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.05s; } .delay-2 { animation-delay: 0.1s; } .delay-3 { animation-delay: 0.15s; }
+.hover-float { transition: transform 0.3s, box-shadow 0.3s; &:hover { transform: translateY(-2px); box-shadow: var(--shadow-float), var(--inner-glow); } }
+
+/* ==========================================================================
+   ESTRUTURA E CABEÇALHO
+   ========================================================================== */
+.premium-box { background: var(--surface-card) !important; backdrop-filter: blur(16px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: var(--shadow-sm), var(--inner-glow); padding: 24px; }
+
+.schedule-header {
+  text-align: center; margin: 24px 0 32px 0;
+  h1 { font-size: 24px; font-weight: 900; color: var(--text-main); margin: 0 0 6px 0; letter-spacing: -0.5px; }
+  p { font-size: 13px; color: var(--text-muted); font-weight: 500; margin: 0; }
+}
+
+/* 🔥 AQUI TÁ A TRAVA QUE CORRIGE O LINGUIÇÃO DA TELA! 🔥 */
+.schedule-grid { 
+  display: grid; 
+  grid-template-columns: minmax(auto, 550px) 360px; 
+  gap: 32px; 
+  justify-content: center; 
+  @media(max-width: 900px){ grid-template-columns: 1fr; } 
+}
+.form-panel { display: flex; flex-direction: column; gap: 24px; }
+.ticket-panel { position: sticky; top: 76px; height: fit-content; }
+
+/* ==========================================================================
+   FORMULÁRIO ESTILIZADO E PASSOS
+   ========================================================================== */
+.step-indicator { font-size: 9px; font-weight: 900; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; width: fit-content; margin-bottom: -10px; }
+.divider-x { height: 1px; background: var(--border-light); width: 100%; margin: 10px 0; }
+
+.form-step { display: flex; flex-direction: column; gap: 8px; 
+  .step-label { font-size: 12px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 6px; mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--primary); } }
+  
+  .custom-select-wrapper { position: relative; display: flex; align-items: center; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; height: 46px; transition: 0.3s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); &:focus-within { background: #ffffff; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light), var(--shadow-sm); } }
+  
+  select { width: 100%; height: 100%; background: transparent; border: none; outline: none; padding: 0 16px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: var(--text-main); appearance: none; cursor: pointer; }
+  select:invalid { color: var(--text-muted); }
+  .select-arrow { position: absolute; right: 12px; color: var(--text-muted); pointer-events: none; }
+
+  /* 🔥 ABAS DE MESES ADICIONADAS 🔥 */
+  .month-selector { display: flex; gap: 8px; margin-bottom: 8px; overflow-x: auto; padding-bottom: 4px; &::-webkit-scrollbar { display: none; } .month-pill { padding: 6px 14px; border-radius: 50px; background: white; border: 1px solid var(--border-light); font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; cursor: pointer; transition: 0.2s; white-space: nowrap; &:hover:not(.active) { background: #f1f5f9; } &.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); } } }
+
+  /* Carrossel de Datas Compacto */
+  .date-ribbon { display: flex; gap: 8px; overflow-x: auto; padding: 4px; padding-bottom: 12px; scroll-behavior: smooth; justify-content: flex-start; &::-webkit-scrollbar { height: 6px; } &::-webkit-scrollbar-track { background: transparent; } &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; } }
+  
+  .date-card { flex: 0 0 56px; height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 1px 1px white; .d-semana { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px; transition: 0.3s; } .d-numero { font-size: 18px; font-weight: 900; color: var(--text-main); transition: 0.3s; } &:hover:not(.active) { transform: translateY(-2px); background: white; border-color: #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.03); } &.active { background: var(--primary); border-color: var(--primary); transform: translateY(-3px) scale(1.03); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); .d-semana, .d-numero { color: white; } .d-semana { opacity: 0.9; } } }
+
+  /* As pílulas de horário */
+  .time-pills-container { display: flex; flex-wrap: wrap; gap: 10px; }
+  .time-pill { background: #f1f5f9; border: 1px solid var(--border-light); border-radius: 50px; padding: 8px 16px; font-size: 12px; font-weight: 800; color: var(--text-muted); cursor: pointer; transition: 0.2s; &:hover { background: #e2e8f0; transform: translateY(-1px); } &.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); transform: scale(1.05); } }
+}
+
+/* ==========================================================================
+   🎟️ O TICKET AO VIVO
+   ========================================================================= */
+.premium-ticket { 
+  background: white; border-radius: 16px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); display: flex; flex-direction: column; overflow: hidden; position: relative; border: 1px solid var(--border-light);
+  
+  .ticket-top { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; color: white; .ticket-brand { display: flex; align-items: center; gap: 6px; font-weight: 900; font-size: 14px; mat-icon { font-size: 18px; width: 18px; height: 18px; } } .ticket-status { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 900; letter-spacing: 1px; animation: pulse-green 2s infinite; } }
+  
+  .ticket-body { padding: 24px 20px; background: white; display: flex; flex-direction: column; gap: 16px;
+    h3 { margin: 0 0 8px 0; font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+    .ticket-info-group { display: flex; flex-direction: column; gap: 2px; .info-label { font-size: 9px; color: #94a3b8; font-weight: 700; text-transform: uppercase; } .info-value { font-size: 15px; font-weight: 900; color: var(--text-main); transition: 0.3s; &.empty { color: #cbd5e1; font-weight: 500; font-style: italic; } &.text-blue { color: var(--primary); font-size: 18px; } } }
+    .ticket-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;}
+  }
+
+  .ticket-divider { position: relative; height: 30px; display: flex; align-items: center; background: white;
+    .dash-line { flex: 1; border-bottom: 2px dashed #cbd5e1; margin: 0 16px; opacity: 0.5; }
+    .notch { position: absolute; width: 30px; height: 30px; background: var(--bg-app); border-radius: 50%; box-shadow: inset 1px 0 3px rgba(0,0,0,0.05); }
+    .notch.left { left: -15px; border-right: 1px solid var(--border-light); }
+    .notch.right { right: -15px; border-left: 1px solid var(--border-light); }
+  }
+
+  .ticket-bottom { padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 16px;
+    .barcode { display: flex; flex-direction: column; align-items: center; color: var(--text-main); opacity: 0.8; span { font-family: 'Courier New', Courier, monospace; font-size: 24px; font-weight: 900; letter-spacing: -1px; } small { font-size: 9px; font-weight: 800; text-transform: uppercase; } }
+    
+    .btn-confirm-ticket { width: 100%; background: linear-gradient(135deg, var(--success-dark), var(--success)); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 13px; font-weight: 900; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3), var(--inner-glow); position: relative; overflow: hidden;
+      &::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: sweep 3s infinite; }
+      &:hover:not([disabled]) { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4); }
+      &[disabled] { background: #cbd5e1; box-shadow: none; cursor: not-allowed; &::before { display: none;} }
+      mat-icon { font-size: 18px; width: 18px; height: 18px;}
+    }
+  }
+}
+
+::ng-deep .mat-snack-bar-container.premium-snackbar {
+  background: var(--surface-card) !important; color: var(--text-main) !important;
+  border-radius: 50px !important; box-shadow: var(--shadow-md), var(--inner-glow) !important;
+  border: 1px solid var(--border-light) !important;
+  .mat-simple-snackbar-action { color: var(--primary) !important; font-weight: 800 !important;}
+}
+/* ==========================================================================
+   🚨 ESTILOS DE LOTAÇÃO / ESGOTADO (O VERMELHÃO)
+   ========================================================================== */
+.date-card.esgotado {
+  background: #fef2f2 !important; /* Fundo vermelhinho fraco */
+  border-color: #fca5a5 !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  
+  /* Risco no meio do texto e cor vermelha */
+  .d-semana, .d-numero { 
+    color: #ef4444 !important; 
+    text-decoration: line-through; 
+  }
+}
+
+.time-pill.esgotado {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #ef4444 !important;
+  text-decoration: line-through;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Quando não tem data selecionada, deixa os botões de horário meio apagados */
+.time-pill[disabled]:not(.esgotado) {
+  opacity: 0.4;
+  cursor: not-allowed;
+  &:hover { background: #f1f5f9; transform: none; }
+}

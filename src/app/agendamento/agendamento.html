@@ -1,0 +1,86 @@
+<mat-toolbar color="primary" class="sga-toolbar">
+  <button mat-icon-button routerLink="/dashboard"><mat-icon>arrow_back</mat-icon></button>
+  <span>Novo Agendamento</span>
+</mat-toolbar>
+
+<div class="agendamento-container">
+  <mat-card class="agendamento-card">
+    
+    <mat-card-header>
+      <mat-icon mat-card-avatar class="medical-icon">edit_calendar</mat-icon>
+      <mat-card-title>Marcar Consulta ou Exame</mat-card-title>
+      <mat-card-subtitle>Siga a ordem abaixo para buscar a disponibilidade</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="agendamento-form">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>1. Unidade de Saúde</mat-label>
+          <mat-select [(ngModel)]="unidadeSelecionada" name="unidade" (selectionChange)="resetarBusca()">
+            <mat-option value="Clínica da Família - Campo Grande">Clínica da Família - Campo Grande</mat-option>
+            <mat-option value="Hospital Municipal Rocha Faria">Hospital Municipal Rocha Faria</mat-option>
+            <mat-option value="Posto de Saúde - Bangu">Posto de Saúde - Bangu</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>2. Especialidade / Exame</mat-label>
+          <mat-select [(ngModel)]="especialidadeSelecionada" name="especialidade" (selectionChange)="resetarBusca()" [disabled]="!unidadeSelecionada">
+            <mat-option value="Clínica Geral">Clínica Geral</mat-option>
+            <mat-option value="Cardiologia">Cardiologia</mat-option>
+            <mat-option value="Pediatria">Pediatria</mat-option>
+            <mat-option value="Raio-X">Raio-X</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>3. Escolha o Dia</mat-label>
+          
+          <input matInput [matDatepicker]="meuCalendario" 
+                 [matDatepickerFilter]="filtroDiasUteis" 
+                 [min]="dataMinima" 
+                 [(ngModel)]="dataSelecionada" 
+                 name="data" 
+                 (dateChange)="buscarHorariosLivreNoDia()" 
+                 [disabled]="!unidadeSelecionada || !especialidadeSelecionada"
+                 readonly
+                 (click)="meuCalendario.open()" 
+                 style="cursor: pointer;"> 
+          
+          <mat-datepicker-toggle matIconSuffix [for]="meuCalendario" [disabled]="!unidadeSelecionada || !especialidadeSelecionada"></mat-datepicker-toggle>
+          
+          <mat-datepicker #meuCalendario [dateClass]="marcarDiasAzuis"></mat-datepicker>
+          
+          <mat-hint>O calendário bloqueia finais de semana e feriados.</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>4. Horários Disponíveis</mat-label>
+          @if (carregandoHorarios) {
+            <mat-select disabled placeholder="Analisando agenda do posto..."></mat-select>
+          } @else {
+            <mat-select [(ngModel)]="horarioSelecionado" name="horario" [disabled]="!dataSelecionada || horariosDaUnidade.length === 0">
+              @for (h of horariosDaUnidade; track h) {
+                <mat-option [value]="h">{{ h }}</mat-option>
+              }
+              @if (dataSelecionada && horariosDaUnidade.length === 0 && !carregandoHorarios) {
+                <mat-option disabled>Nenhum horário livre neste dia</mat-option>
+              }
+            </mat-select>
+          }
+          <mat-icon matSuffix>schedule</mat-icon>
+        </mat-form-field>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="action-buttons">
+      <button mat-button routerLink="/dashboard">Cancelar</button>
+      <button mat-raised-button class="buscar-btn" (click)="salvarAgendamento()" [disabled]="!horarioSelecionado">
+        <mat-icon>check_circle</mat-icon> Confirmar Vaga
+      </button>
+    </mat-card-actions>
+    
+  </mat-card>
+</div>

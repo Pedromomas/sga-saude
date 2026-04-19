@@ -1,0 +1,80 @@
+<div class="login-bg">
+  <mat-card class="login-card">
+    <div class="sus-strip"></div>
+
+    <mat-card-header class="header-center">
+      <div class="logo-circle">
+        <mat-icon>person_add</mat-icon>
+      </div>
+      <mat-card-title class="sga-title">Criar Conta</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="login-form">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Nome Completo</mat-label>
+          <mat-icon matPrefix>badge</mat-icon>
+          <input matInput [(ngModel)]="nomeDigitado" name="nome">
+        </mat-form-field>
+
+        <div style="display: flex; gap: 10px;">
+          <mat-form-field appearance="outline" style="flex: 1;">
+            <mat-label>CPF</mat-label>
+            <mat-icon matPrefix>assignment_ind</mat-icon>
+            <input matInput placeholder="000.000.000-00" [(ngModel)]="cpfDigitado" name="cpf">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1;">
+            <mat-label>Telefone</mat-label>
+            <mat-icon matPrefix>phone</mat-icon>
+            <input matInput placeholder="(21) 99999-9999" [(ngModel)]="telefoneDigitado" name="telefone">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Cartão do SUS (Opcional)</mat-label>
+          <mat-icon matPrefix>credit_card</mat-icon>
+          <input matInput [(ngModel)]="cnsDigitado" name="cns">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>CEP</mat-label>
+          <mat-icon matPrefix>location_on</mat-icon>
+          <input matInput placeholder="00000-000" [(ngModel)]="cepDigitado" name="cep" (blur)="buscarCep()">
+          <mat-hint>O endereço será preenchido automaticamente</mat-hint>
+        </mat-form-field>
+
+        <div style="display: flex; gap: 10px;">
+          <mat-form-field appearance="outline" style="flex: 3;">
+            <mat-label>Endereço (Rua/Av)</mat-label>
+            <mat-icon matPrefix>home</mat-icon>
+            <input matInput [(ngModel)]="enderecoDigitado" name="endereco">
+          </mat-form-field>
+          <mat-form-field appearance="outline" style="flex: 1;">
+            <mat-label>Nº</mat-label>
+            <input matInput [(ngModel)]="numeroDigitado" name="numero">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <mat-icon matPrefix>email</mat-icon>
+          <input matInput [(ngModel)]="emailDigitado" name="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Senha</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input matInput type="password" [(ngModel)]="senhaDigitada" name="senha">
+        </mat-form-field>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="action-buttons">
+      <button mat-raised-button class="login-btn" (click)="criarConta()">Finalizar Cadastro</button>
+      <button mat-button class="forgot-btn" routerLink="/login">Voltar ao Login</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

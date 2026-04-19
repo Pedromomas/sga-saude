@@ -1,59 +1,56 @@
-# SgaWeb
+# 🏥 SGA Saúde - Sistema Inteligente para o SUS Digital
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.6.
+<div align="center">
+  O <b>SGA Saúde</b> é uma plataforma moderna de gestão e agendamento médico desenvolvida para revolucionar a experiência do paciente no Sistema Único de Saúde (SUS). O foco principal é eliminar filas de espera na madrugada, otimizar vagas canceladas e trazer o histórico médico para a palma da mão do usuário com uma interface de altíssimo nível.
+</div>
 
-## Development server
+<br>
 
-To start a local development server, run:
+## ✨ Funcionalidades Principais
+
+* **📅 Agendamento Inteligente:** Marcação rápida com bloqueio automático de vagas esgotadas para evitar superlotação.
+* **♻️ Fila de Antecipação:** Sistema inteligente que detecta cancelamentos e notifica automaticamente os próximos pacientes da fila.
+* **📱 Caderneta Digital:** Acesso seguro a histórico de vacinas, receitas médicas e exames.
+* **🔔 Mural de Avisos:** Alertas oficiais sobre campanhas de vacinação e comunicados das unidades de saúde em tempo real.
+* **💅 Design Premium & UX:** Interface responsiva construída com Glassmorphism, micro-interações fluidas e foco total no bem-estar do usuário.
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+Este projeto foi construído com as melhores e mais modernas tecnologias do mercado:
+
+* **Frontend:** Angular 21, TypeScript, SCSS
+* **Mobile Nativo:** Capacitor (Pronto para gerar `.apk` Android e iOS)
+* **Backend & Cloud:** Firebase (Authentication, Firestore, Hosting)
+* **Design System:** Material Icons & UI Responsiva Customizada
+
+---
+
+## 🛠️ Como rodar o projeto na sua máquina
+
+Para rodar esse projeto localmente e ver a mágica acontecendo, siga o passo a passo abaixo. 
+
+### 1. Pré-requisitos
+Certifique-se de ter instalado em sua máquina:
+* [Node.js](https://nodejs.org/) (Versão LTS recomendada)
+* [Angular CLI](https://angular.io/cli) (Instale globalmente rodando `npm install -g @angular/cli`)
+* Git
+
+### 2. Passo a passo no Terminal
+
+Abra o seu terminal e execute os comandos abaixo, um por um:
 
 ```bash
+# Clone este repositório para a sua máquina
+git clone [https://github.com/SEU_USUARIO/sga-saude.git](https://github.com/SEU_USUARIO/sga-saude.git)
+
+# Entre na pasta do projeto
+cd sga-saude
+
+# Instale todas as dependências do projeto 
+# (Utilizamos --legacy-peer-deps para garantir a compatibilidade do Angular com o Firebase)
+npm install --legacy-peer-deps
+
+# Inicie o servidor local de desenvolvimento
 ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

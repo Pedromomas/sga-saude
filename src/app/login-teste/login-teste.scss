@@ -1,0 +1,193 @@
+/* --- VARIÁVEIS DO TEMA --- */
+$primary: #2563eb;
+$primary-light: #60a5fa;
+$bg-dark: #0f172a;
+$glass-bg: rgba(255, 255, 255, 0.85);
+$text-main: #1e293b;
+$text-muted: #64748b;
+
+/* --- RESET BÁSICO --- */
+.super-login-container {
+  height: 100vh; width: 100vw; margin: 0; padding: 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: #f8fafc; position: relative; overflow: hidden;
+  font-family: 'Inter', sans-serif; box-sizing: border-box;
+}
+
+/* --- LUZES AMBIENTES ANIMADAS (FUNDO) --- */
+.ambient-light {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
+  animation: drift 12s infinite alternate ease-in-out; z-index: 0;
+}
+.light-1 { width: 500px; height: 500px; background: rgba(37, 99, 235, 0.4); top: -10%; left: -10%; }
+.light-2 { width: 400px; height: 400px; background: rgba(56, 189, 248, 0.4); bottom: -10%; right: -5%; animation-delay: -5s; }
+.light-3 { width: 300px; height: 300px; background: rgba(16, 185, 129, 0.2); top: 40%; left: 40%; animation-delay: -2s; }
+
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(60px, -40px) scale(1.1); }
+}
+
+/* --- O CARD DE VIDRO --- */
+.glass-panel {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 420px;
+  background: $glass-bg; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-radius: 24px; padding: 40px 32px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.enter-anim { animation: popUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- CABEÇALHO --- */
+.panel-header {
+  text-align: center; margin-bottom: 32px;
+  
+  .brand-icon {
+    width: 56px; height: 56px; margin: 0 auto 16px;
+    background: linear-gradient(135deg, $primary, $primary-light);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+    mat-icon { font-size: 32px; width: 32px; height: 32px; animation: floatIcon 3s ease-in-out infinite alternate; }
+  }
+  
+  h2 { font-size: 24px; font-weight: 900; color: $text-main; margin: 0 0 4px; letter-spacing: -0.5px; }
+  p { font-size: 13px; color: $text-muted; font-weight: 500; margin: 0; }
+}
+
+@keyframes floatIcon {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+/* --- INPUTS PREMIUM --- */
+.form-wrapper { display: flex; flex-direction: column; gap: 20px; }
+
+.input-modern {
+  position: relative; display: flex; align-items: center;
+  background: #f1f5f9; border-radius: 12px; height: 56px;
+  padding: 0 16px; transition: 0.3s;
+  
+  .prefix-icon { color: #94a3b8; font-size: 20px; width: 20px; height: 20px; margin-right: 12px; transition: 0.3s; }
+  
+  input {
+    flex: 1; height: 100%; background: transparent; border: none; outline: none;
+    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: $text-main;
+    &::placeholder { color: #94a3b8; font-weight: 500; }
+  }
+
+  .btn-eye {
+    background: none; border: none; color: #94a3b8; display: flex; align-items: center;
+    cursor: pointer; padding: 0; transition: 0.2s;
+    &:hover { color: $primary; }
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+  }
+
+  /* Detalhe bobo: A barra inferior deslizando no foco */
+  .focus-bar {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    height: 2px; width: 0; background: $primary; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 2px;
+  }
+
+  &:focus-within {
+    background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    .prefix-icon { color: $primary; transform: scale(1.1); }
+    .focus-bar { width: calc(100% - 32px); }
+  }
+}
+
+/* --- OPÇÕES E LINKS --- */
+.form-options { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
+
+.custom-checkbox {
+  display: flex; align-items: center; gap: 8px; cursor: pointer; color: $text-muted; transition: 0.2s;
+  &:hover { color: $text-main; }
+  input { display: none; }
+  .checkmark {
+    width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; transition: 0.2s;
+    mat-icon { font-size: 14px; width: 14px; height: 14px; color: white; opacity: 0; transform: scale(0.5); transition: 0.2s; }
+  }
+  input:checked ~ .checkmark { background: $primary; border-color: $primary; mat-icon { opacity: 1; transform: scale(1); } }
+}
+
+.text-link {
+  color: $primary; cursor: pointer; text-decoration: none; transition: 0.2s;
+  &:hover { color: #1d4ed8; text-decoration: underline; }
+}
+
+/* --- ALERTA DE ERRO --- */
+.error-alert {
+  display: flex; align-items: center; gap: 8px; background: #fef2f2; color: #ef4444;
+  padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 600;
+  border-left: 4px solid #ef4444; animation: shake 0.4s;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+/* --- ALERTA DE SUCESSO --- */
+.success-alert {
+  display: flex; align-items: center; gap: 8px; background: #ecfdf5; color: #10b981;
+  padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 600;
+  border-left: 4px solid #10b981; animation: popUp 0.4s; margin-bottom: 20px;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+/* --- BOTÃO PRINCIPAL (GLOW) --- */
+.btn-glow {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; height: 56px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, $primary, $primary-light); color: white;
+  font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  
+  /* Sombra brilhante */
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+
+  /* Detalhe bobo: Brilho passando no fundo */
+  &::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: sweep 3s infinite;
+  }
+
+  .arrow-icon { transition: 0.3s; }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px); box-shadow: 0 15px 25px rgba(37, 99, 235, 0.4); filter: brightness(1.1);
+    .arrow-icon { transform: translateX(4px); } /* Setinha indo pra frente */
+  }
+
+  &:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; &::after { display: none; } }
+}
+@keyframes sweep { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+
+/* --- SPINNER DE LOADING --- */
+.loader { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- RODAPÉ (DIVISOR E CADASTRO) --- */
+.panel-footer {
+  margin-top: 32px;
+  
+  .divider {
+    display: flex; align-items: center; text-align: center; margin-bottom: 24px;
+    &::before, &::after { content: ''; flex: 1; border-bottom: 1px solid #e2e8f0; }
+    span { padding: 0 12px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+  }
+
+  .btn-outline {
+    width: 100%; height: 50px; background: transparent;
+    border: 2px solid #e2e8f0; border-radius: 12px;
+    color: $text-main; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: 0.2s;
+    &:hover { border-color: $text-muted; background: #f8fafc; }
+  }
+}

@@ -1,0 +1,115 @@
+/* Barra superior com fundo azul e letras brancas */
+.sga-toolbar {
+  background-color: #0056b3 !important; 
+  button, mat-icon {
+    color: white !important;
+  }
+  span {
+    margin-left: 10px;
+    color: white;
+    font-weight: 500;
+  }
+}
+
+/* Fundo da tela */
+.agendamento-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  min-height: calc(100vh - 64px);
+  background-color: transparent; /* Deixa o fundo limpo */
+}
+
+/* O cartão de agendamento bonitão e centralizado */
+.agendamento-card {
+  width: 100%;
+  max-width: 600px;
+  height: fit-content !important;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* Sombra elegante */
+}
+
+/* Cabeçalho e Ícone */
+mat-card-header {
+  margin-bottom: 25px;
+}
+.medical-icon {
+  color: #008080;
+  transform: scale(1.5);
+  margin-top: 5px;
+}
+mat-card-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Formulário e Campos */
+.agendamento-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Espaço entre os campos */
+}
+
+/* Botões */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 15px;
+  
+  .buscar-btn {
+    background-color: #0056b3 !important;
+    color: white !important;
+  }
+}
+/* ========================================================
+   ESTILOS DO CALENDÁRIO (Cores dinâmicas)
+   ======================================================== */
+   
+.dia-livre-azul .mat-calendar-body-cell-content {
+  background-color: #E0F2F1 !important; /* Azul/Verde claro de saúde */
+  color: #00796B !important; /* Texto mais forte */
+  font-weight: 500;
+  border: 1px solid #B2DFDB; /* Bordinha charmosa */
+}
+
+/* Efeito ao passar o mouse em cima do dia azul */
+.dia-livre-azul:hover .mat-calendar-body-cell-content {
+  background-color: #B2DFDB !important;
+}
+/* ========================================================
+   🔥 BARRA FIXA (STICKY NAVBAR)
+   ======================================================== */
+mat-toolbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ========================================================
+   🎨 SCROLLBAR MODERNA E ROLAGEM SUAVE
+   ======================================================== */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #c1c1c1; 
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #3F51B5; 
+}
+
+/* Garante o comportamento suave nas caixas de conteúdo */
+.dashboard-container, .perfil-container, .agendamento-container {
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain;
+}

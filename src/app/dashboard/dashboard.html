@@ -1,0 +1,190 @@
+<mat-toolbar class="glass-navbar">
+  <div class="logo-area">
+    <div class="logo-emblem">
+       <mat-icon class="logo-icon">health_and_safety</mat-icon>
+    </div>
+    <span class="logo-text">SGA Saúde</span>
+  </div>
+  <span class="spacer"></span>
+  <mat-form-field class="search-capsule" appearance="outline">
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Buscar consultas, médicos, exames...">
+  </mat-form-field>
+  <span class="spacer"></span>
+  <button class="user-chip" routerLink="/perfil">
+    <div class="avatar-box">CR</div>
+    <span class="name-text">Meu Perfil</span>
+  </button>
+  <button mat-icon-button class="btn-sair" routerLink="/login">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="dashboard-container">
+  
+  <div class="welcome-header">
+    @if (loadingNome) {
+      <div class="loading-name"><mat-spinner diameter="25"></mat-spinner><span>Buscando...</span></div>
+    } @else {
+      <h1 class="welcome-text">Olá, {{ nomeUsuario }}! 👋</h1>
+    }
+  </div>
+
+  <div class="dashboard-grid" style="margin-bottom: 24px;">
+    <div class="left-column top-cards-left">
+      <mat-card class="top-stat-card">
+        <div class="card-title">Consultas Ativas</div>
+        <div class="card-content">
+          <div class="icon-box bg-blue-light"><mat-icon style="color: #1e3a8a;">event</mat-icon></div>
+          <div class="text-stack">
+            <h2>{{ meusAgendamentos.length }}</h2>
+            <strong>Próximas Consultas</strong>
+            <span>Acompanhe seus agendamentos</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="top-stat-card">
+        <div class="card-title">Mural da Saúde</div>
+        <div class="card-content">
+          <div class="icon-box bg-orange-light"><mat-icon style="color: #ea580c;">notifications</mat-icon></div>
+          <div class="text-stack">
+            <h2>{{ avisosDoMural.length || 2 }}</h2>
+            <strong>Novos Avisos Importantes</strong>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="right-column">
+      <mat-card class="top-stat-card h-100">
+        <div class="card-title">Status de Vacinação</div>
+        <div class="card-content">
+          <div class="icon-circle-chart"><mat-icon style="color: #1e3a8a; font-size: 20px; width: 20px; height: 20px;">favorite</mat-icon></div>
+          <div class="text-stack">
+            <h2 class="text-teal">Em dia</h2>
+            <span>Última dose: 15/01/2026</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="left-column">
+      
+      <mat-card class="big-white-board">
+        <div class="board-header">
+          <h2>Meus Agendamentos</h2>
+          <p>Acompanhe e gerencie todas as suas consultas.</p>
+        </div>
+
+        <div class="appointments-scroll-area">
+          <div class="appointments-list">
+            @for (agenda of meusAgendamentos; track agenda.id) {
+              
+              <div class="appt-card-premium">
+                <div class="stripe" 
+                     [class.bg-green]="agenda.status === 'Confirmada'"
+                     [class.bg-red]="agenda.status === 'Cancelada'"
+                     [class.bg-blue]="agenda.status !== 'Confirmada' && agenda.status !== 'Cancelada'">
+                </div>
+                
+                <div class="col-info">
+                  <h4>{{ agenda.especialidade }}</h4>
+                  <p>{{ agenda.unidade }}</p>
+                </div>
+
+                <div class="col-date">
+                  <div class="info-item"><mat-icon>calendar_today</mat-icon> <span>{{ agenda.data }}</span></div>
+                  <div class="info-item"><mat-icon>location_on</mat-icon> <span>Posto de Saúde - Bangu</span></div>
+                </div>
+
+                <div class="col-status">
+                  @if (agenda.status === 'Confirmada') {
+                    <div class="badge badge-green">Confirmada</div>
+                  } @else if (agenda.status === 'Cancelada') {
+                    <div class="badge badge-gray">Cancelada</div>
+                  } @else {
+                    <div class="badge badge-gray">Aguardando</div>
+                  }
+                </div>
+
+                <div class="col-actions">
+                  @if (agenda.status === 'Confirmada') {
+                    <button class="btn-solid-red" (click)="abrirModalDeCancelamento(agenda.id)">Cancelar</button>
+                  } @else if (agenda.status === 'Cancelada') {
+                    <button class="btn-outline-teal" routerLink="/agendamento">Reagendar</button>
+                    <button mat-icon-button class="btn-delete-icon" (click)="excluirConsulta(agenda.id)" title="Remover do Histórico">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  } @else {
+                    <button class="btn-outline-teal" routerLink="/preparo">Ver Preparo</button>
+                  }
+                </div>
+              </div>
+
+            } @empty {
+              <div style="padding: 40px; text-align: center; color: #94a3b8;">Nenhum agendamento encontrado.</div>
+            }
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="big-white-board" style="margin-top: 24px; padding: 24px;">
+        <h3 class="section-subtitle">Ações Rápidas</h3>
+        <div class="actions-row">
+          <button class="btn-action-card" routerLink="/agendamento">Marcar Nova Consulta</button>
+          <button class="btn-action-card" routerLink="/exames">Ver Resultados de Exames</button>
+          <button class="btn-action-card" routerLink="/telemedicina">Solicitar Telemedicina</button>
+        </div>
+      </mat-card>
+
+    </div>
+
+    <div class="right-column">
+      <mat-card class="widget-card">
+        <h3>Meus Documentos</h3>
+        <div class="docs-grid">
+          <div class="doc-item" routerLink="/exames"><mat-icon style="color: #1e3a8a;">folder</mat-icon><span>Exames</span></div>
+          <div class="doc-item" routerLink="/receitas"><mat-icon style="color: #1e3a8a;">description</mat-icon><span>Receitas</span></div>
+        </div>
+      </mat-card>
+
+      <mat-card class="widget-card">
+        <h3>Avisos Urgentes</h3>
+        @for (aviso of avisosDoMural; track aviso.id) {
+          <div class="alert-box" [class.bg-orange]="aviso.tipo === 'alerta'" [class.bg-pink]="aviso.tipo !== 'alerta'">
+            <mat-icon>warning</mat-icon>
+            <div>
+              <strong>{{ aviso.tipo === 'alerta' ? 'ALERTA:' : 'ALERTA IMPORTANTE:' }}</strong><br>
+              <span>{{ aviso.titulo }} - {{ aviso.mensagem }}</span>
+            </div>
+          </div>
+        } @empty {
+          <div class="alert-box bg-orange">
+            <mat-icon>warning</mat-icon>
+            <div><strong>ALERTA:</strong><br><span>Bolsonaro Voltou - Urgente</span></div>
+          </div>
+        }
+      </mat-card>
+
+      <mat-card class="widget-card">
+        <h3>Mural da Saúde/Ouvidoria</h3>
+        <div class="ouvidoria-box">
+          <strong>Ouvidoria SUS</strong>
+          <p>Elogios, sugestões ou reclamações?<br>Fale com a gente pelo <strong>Disque 136</strong>.</p>
+        </div>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #modalCancelamento>
+  <h2 mat-dialog-title>Confirmar Cancelamento</h2>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Desistir</button>
+    <button mat-raised-button color="warn" (click)="confirmarCancelamento()">Sim, Cancelar Vaga</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,0 +1,240 @@
+<mat-toolbar color="accent" class="admin-toolbar">
+  <mat-icon>admin_panel_settings</mat-icon>
+  
+  @if (meuPerfilAdmin?.cargo === 'supremo') {
+    <span>Controle Geral - SUPREMO</span>
+  } @else {
+    <span>Controle - {{ meuPerfilAdmin?.unidadeTrabalho }}</span>
+  }
+  
+  <span class="spacer"></span>
+  
+  <button mat-icon-button routerLink="/perfil" title="Meu Perfil">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <button mat-icon-button routerLink="/login" title="Sair do sistema">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="admin-container">
+  <mat-tab-group animationDuration="0ms" color="accent" backgroundColor="primary" class="admin-tabs">
+    
+    <mat-tab>
+      <ng-template mat-tab-label><mat-icon style="margin-right: 8px;">list_alt</mat-icon> Fila de Atendimento</ng-template>
+      
+      <div style="padding: 20px 20px 0 20px;">
+        @if (meuPerfilAdmin?.cargo === 'supremo') {
+          <mat-card style="padding: 15px; margin-bottom: 20px; border-left: 4px solid #3F51B5; background-color: white;">
+            <mat-form-field appearance="outline" style="width: 100%; margin-bottom: -15px;">
+              <mat-label><mat-icon inline>filter_alt</mat-icon> Filtrar Visão por Unidade</mat-label>
+              <mat-select [(ngModel)]="filtroUnidadeSupremo" (selectionChange)="carregarTodasConsultas()">
+                <mat-option value="Todas">🌍 Ver Todas as Unidades (Visão Global)</mat-option>
+                <mat-option value="Posto de Saúde - Bangu">Posto de Saúde - Bangu</mat-option>
+                <mat-option value="Hospital Municipal Rocha Faria">Hospital Municipal Rocha Faria</mat-option>
+                <mat-option value="Clínica da Família - Campo Grande">Clínica da Família - Campo Grande</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card>
+        }
+      </div>
+
+      @if (carregandoConsultas) {
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px;">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p style="margin-top: 20px; color: #555; font-weight: 500;">Buscando agendamentos no sistema...</p>
+        </div>
+      } @else {
+        <div class="cards-grid" style="margin-top: 0; padding: 0 20px 20px 20px;">
+          
+          @for (consulta of todasConsultas; track consulta.id; let i = $index) {
+            <mat-card class="admin-card" [style.animation-delay]="(i * 0.1) + 's'">
+              
+              <div class="status-indicator" [class.em-atendimento]="consulta.status === 'Em Atendimento'"></div>
+              <mat-card-header>
+                <mat-icon mat-card-avatar class="admin-icon">person</mat-icon>
+                <mat-card-title>{{ consulta.infoPaciente.nome }}</mat-card-title>
+                <mat-card-subtitle>{{ consulta.especialidade }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content class="admin-details">
+                <p><mat-icon inline="true" style="vertical-align: bottom;">location_on</mat-icon> <strong>Endereço:</strong> {{ consulta.infoPaciente.endereco }}</p>
+                <p><mat-icon inline="true" style="vertical-align: bottom;">map</mat-icon> <strong>CEP:</strong> {{ consulta.infoPaciente.cep }}</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <p><strong>Unidade:</strong> {{ consulta.unidade }}</p>
+                <p><strong>Data:</strong> {{ consulta.data }} | <strong>Horário:</strong> {{ consulta.horario || '--:--' }}</p>
+                <p><strong>Status Atual:</strong> <span class="badge">{{ consulta.status }}</span></p>
+              </mat-card-content>
+              <mat-card-actions class="admin-actions">
+                @if (consulta.status === 'Confirmada') {
+                  <button mat-raised-button color="primary" (click)="chamarPaciente(consulta.id)"><mat-icon>campaign</mat-icon> Chamar</button>
+                } @else if (consulta.status === 'Cancelada') {
+                  <button mat-raised-button color="accent" style="background-color: #ff9800; color: white;" (click)="repassarVaga(consulta)"><mat-icon>transfer_within_a_station</mat-icon> Repassar</button>
+                } @else {
+                  <button mat-stroked-button disabled><mat-icon>check</mat-icon> Em Andamento</button>
+                }
+              </mat-card-actions>
+            </mat-card>
+          } @empty {
+            <div class="empty-state"><mat-icon>check_circle_outline</mat-icon><h3>Fila Vazia</h3><p>Nenhum paciente aguardando nesta unidade.</p></div>
+          }
+        </div>
+      }
+    </mat-tab>
+
+    @if (meuPerfilAdmin?.cargo === 'supremo' || meuPerfilAdmin?.cargo === 'chefe') {
+      <mat-tab>
+        <ng-template mat-tab-label><mat-icon style="margin-right: 8px;">campaign</mat-icon> Gestão do Mural</ng-template>
+        <div class="avisos-layout">
+          <mat-card class="form-aviso-card">
+            <h3 style="margin-bottom: 15px;"><mat-icon inline="true">add_alert</mat-icon> Criar Novo Aviso</h3>
+            <mat-form-field appearance="outline" style="width: 100%;"><mat-label>Título</mat-label><input matInput [(ngModel)]="novoAviso.titulo"></mat-form-field>
+            <mat-form-field appearance="outline" style="width: 100%;"><mat-label>Mensagem</mat-label><textarea matInput [(ngModel)]="novoAviso.mensagem" rows="3"></textarea></mat-form-field>
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Cor/Tipo</mat-label>
+              <mat-select [(ngModel)]="novoAviso.tipo">
+                <mat-option value="alerta">Alerta (Vermelho)</mat-option>
+                <mat-option value="info">Informativo (Azul)</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button mat-raised-button color="primary" style="width: 100%; padding: 25px 0;" (click)="publicarAviso()"><mat-icon>publish</mat-icon> Publicar</button>
+          </mat-card>
+          <div class="lista-avisos">
+            <h3 style="margin-bottom: 15px;"><mat-icon inline="true">visibility</mat-icon> Avisos Ativos</h3>
+            @for (aviso of todosAvisos; track aviso.id) {
+              <mat-card class="aviso-item-card" [class.is-alerta]="aviso.tipo === 'alerta'">
+                <mat-card-header>
+                  <div mat-card-avatar class="aviso-icone"><mat-icon>{{ aviso.tipo === 'alerta' ? 'warning' : 'info' }}</mat-icon></div>
+                  <mat-card-title>{{ aviso.titulo }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content style="padding: 10px 16px;"><p style="margin: 0;">{{ aviso.mensagem }}</p></mat-card-content>
+                <mat-card-actions style="display: flex; justify-content: flex-end;">
+                  <button mat-button color="warn" (click)="excluirAviso(aviso.id)"><mat-icon>delete</mat-icon> Remover</button>
+                </mat-card-actions>
+              </mat-card>
+            }
+          </div>
+        </div>
+      </mat-tab>
+    }
+
+    @if (meuPerfilAdmin?.cargo === 'supremo' || meuPerfilAdmin?.cargo === 'chefe') {
+      <mat-tab>
+        <ng-template mat-tab-label><mat-icon style="margin-right: 8px;">settings</mat-icon> Configurar Unidade</ng-template>
+        <div style="padding: 30px; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+          
+          <mat-card style="padding: 20px;">
+            <h3 style="margin-bottom: 20px;"><mat-icon inline="true">tune</mat-icon> Capacidade e Horários</h3>
+            
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Unidade de Saúde</mat-label>
+              @if (meuPerfilAdmin?.cargo === 'supremo') {
+                <mat-select [(ngModel)]="configRegra.unidade">
+                  <mat-option value="Posto de Saúde - Bangu">Posto de Saúde - Bangu</mat-option>
+                  <mat-option value="Hospital Municipal Rocha Faria">Hospital Municipal Rocha Faria</mat-option>
+                  <mat-option value="Clínica da Família - Campo Grande">Clínica da Família - Campo Grande</mat-option>
+                </mat-select>
+              } @else {
+                <input matInput [value]="meuPerfilAdmin?.unidadeTrabalho" disabled>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Especialidade / Exame</mat-label>
+              <mat-select [(ngModel)]="configRegra.especialidade">
+                <mat-option value="Clínica Geral">Clínica Geral</mat-option>
+                <mat-option value="Cardiologia">Cardiologia</mat-option>
+                <mat-option value="Pediatria">Pediatria</mat-option>
+                <mat-option value="Raio-X">Raio-X</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Limite de Vagas</mat-label>
+              <mat-icon matPrefix>group</mat-icon>
+              <input matInput type="number" [(ngModel)]="configRegra.vagasPorHora">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Horários (separados por vírgula)</mat-label>
+              <mat-icon matPrefix>schedule</mat-icon>
+              <input matInput [(ngModel)]="configRegra.horariosDisponiveis" placeholder="Ex: 08:00, 09:00">
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" style="width: 100%; padding: 25px 0; margin-top: 15px;" (click)="salvarConfiguracao()">
+              <mat-icon>save</mat-icon> Salvar Regras
+            </button>
+          </mat-card>
+
+          <mat-card style="padding: 20px; border: 2px solid #f44336; background-color: #fff5f5;">
+            <h3 style="color: #d32f2f; margin-bottom: 10px;"><mat-icon inline="true">warning</mat-icon> Protocolo de Emergência</h3>
+            <p style="color: #555; font-size: 14px; margin-bottom: 15px;">Use este botão em caso de fechamento inesperado da unidade.</p>
+            <div style="background-color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #d32f2f;">
+              <p style="margin: 0 0 5px 0; color: #333;"><strong>Unidade Alvo:</strong> {{ configRegra.unidade }}</p>
+            </div>
+            <button mat-raised-button color="warn" style="width: 100%; padding: 25px 0; font-weight: bold; font-size: 15px;" (click)="acionarModoEmergencia()">
+              <mat-icon>report_problem</mat-icon> CANCELAMENTO EM MASSA
+            </button>
+          </mat-card>
+        </div>
+      </mat-tab>
+    }
+
+    @if (meuPerfilAdmin?.cargo === 'supremo' || meuPerfilAdmin?.cargo === 'chefe') {
+      <mat-tab>
+        <ng-template mat-tab-label><mat-icon style="margin-right: 8px;">manage_accounts</mat-icon> Gerenciar Equipe</ng-template>
+        
+        <div style="padding: 30px; max-width: 600px; margin: 0 auto;">
+          <mat-card style="padding: 20px; border-top: 4px solid #3F51B5;">
+            <h3 style="margin-bottom: 20px; color: #3F51B5;"><mat-icon inline="true">person_add</mat-icon> Contratar Novo Funcionário</h3>
+            
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Nome Completo</mat-label>
+              <input matInput [(ngModel)]="novoMembro.nome">
+            </mat-form-field>
+
+            <div style="display: flex; gap: 15px;">
+              <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>E-mail Corporativo</mat-label>
+                <input matInput type="email" [(ngModel)]="novoMembro.email">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Senha Temporária</mat-label>
+                <input matInput type="password" [(ngModel)]="novoMembro.senha">
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Nível de Acesso (Cargo)</mat-label>
+              <mat-select [(ngModel)]="novoMembro.cargo">
+                @if (meuPerfilAdmin?.cargo === 'supremo') {
+                  <mat-option value="chefe">Admin Chefe (Gerente de Unidade)</mat-option>
+                }
+                <mat-option value="funcionario">Funcionário (Atendimento Balcão)</mat-option>
+              </mat-select>
+              <mat-hint>O Supremo cria Chefes. O Chefe só cria Funcionários.</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="width: 100%;">
+              <mat-label>Unidade de Lotação</mat-label>
+              @if (meuPerfilAdmin?.cargo === 'supremo') {
+                <mat-select [(ngModel)]="novoMembro.unidade">
+                  <mat-option value="Posto de Saúde - Bangu">Posto de Saúde - Bangu</mat-option>
+                  <mat-option value="Hospital Municipal Rocha Faria">Hospital Municipal Rocha Faria</mat-option>
+                  <mat-option value="Clínica da Família - Campo Grande">Clínica da Família - Campo Grande</mat-option>
+                </mat-select>
+              } @else {
+                <input matInput [value]="meuPerfilAdmin?.unidadeTrabalho" disabled>
+              }
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" style="width: 100%; padding: 25px 0; margin-top: 15px;" (click)="cadastrarMembroEquipe()">
+              <mat-icon>how_to_reg</mat-icon> Criar Conta de Acesso
+            </button>
+          </mat-card>
+        </div>
+      </mat-tab>
+    }
+
+  </mat-tab-group>
+</div>

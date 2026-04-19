@@ -1,0 +1,140 @@
+<mat-toolbar color="primary" class="sga-toolbar">
+  <button mat-icon-button routerLink="/dashboard">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>Meu Perfil</span>
+</mat-toolbar>
+
+<div class="perfil-container">
+  @if (carregando) {
+    <div class="loading-area">
+      <mat-spinner></mat-spinner>
+      <p>Carregando seus dados...</p>
+    </div>
+  } @else {
+    <mat-card class="perfil-card">
+      <div class="card-header-bg"></div>
+      
+      <div class="avatar-container">
+        <div class="avatar-circle">
+          <mat-icon>person</mat-icon>
+        </div>
+      </div>
+
+      <mat-card-content class="perfil-info">
+        
+        @if (editando) {
+          <h3 style="margin-bottom: 20px;">Editar Informações</h3>
+          
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Nome Completo</mat-label>
+            <input matInput [(ngModel)]="dadosEditados.nomeCompleto">
+          </mat-form-field>
+
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>CPF</mat-label>
+              <input matInput [(ngModel)]="dadosEditados.cpf">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>Telefone</mat-label>
+              <input matInput [(ngModel)]="dadosEditados.telefone">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Cartão do SUS</mat-label>
+            <input matInput [(ngModel)]="dadosEditados.cns">
+          </mat-form-field>
+
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <mat-form-field appearance="outline" style="flex: 2;">
+              <mat-label>Endereço</mat-label>
+              <input matInput [(ngModel)]="dadosEditados.endereco">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>Nº</mat-label>
+              <input matInput [(ngModel)]="dadosEditados.numero">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>CEP</mat-label>
+            <input matInput [(ngModel)]="dadosEditados.cep">
+          </mat-form-field>
+
+        } @else {
+          <h2 class="nome-destaque">{{ dadosUsuario?.nomeCompleto }}</h2>
+          <p class="email-info">{{ dadosUsuario?.email }}</p>
+
+          <mat-card class="info-box">
+            <div class="info-row">
+              <mat-icon color="primary">assignment_ind</mat-icon>
+              <div class="text-data">
+                <span class="label">CPF</span>
+                <span class="value">{{ dadosUsuario?.cpf || 'Não informado' }}</span>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card class="info-box">
+            <div class="info-row">
+              <mat-icon color="primary">phone</mat-icon>
+              <div class="text-data">
+                <span class="label">Telefone</span>
+                <span class="value">{{ dadosUsuario?.telefone || 'Não informado' }}</span>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card class="info-box">
+            <div class="info-row">
+              <mat-icon color="primary">credit_card</mat-icon>
+              <div class="text-data">
+                <span class="label">Cartão do SUS</span>
+                <span class="value">{{ dadosUsuario?.cns || 'Não informado' }}</span>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card class="info-box">
+            <div class="info-row">
+              <mat-icon color="accent">home</mat-icon>
+              <div class="text-data">
+                <span class="label">Endereço</span>
+                <span class="value">
+                  {{ dadosUsuario?.endereco || 'Não informado' }} 
+                  {{ dadosUsuario?.numero ? ', ' + dadosUsuario.numero : '' }}
+                </span>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card class="info-box">
+            <div class="info-row">
+              <mat-icon color="warn">location_on</mat-icon>
+              <div class="text-data">
+                <span class="label">CEP</span>
+                <span class="value">{{ dadosUsuario?.cep || 'Não informado' }}</span>
+              </div>
+            </div>
+          </mat-card>
+        }
+      </mat-card-content>
+
+      <mat-card-actions class="action-buttons">
+        @if (editando) {
+          <button mat-button (click)="cancelarEdicao()">Cancelar</button>
+          <button mat-raised-button color="primary" (click)="salvarEdicao()">Salvar</button>
+        } @else {
+          <button mat-stroked-button color="primary" (click)="habilitarEdicao()">
+            <mat-icon>edit</mat-icon> Editar Informações
+          </button>
+          <button mat-stroked-button color="warn" routerLink="/login">
+            <mat-icon>logout</mat-icon> Sair
+          </button>
+        }
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>

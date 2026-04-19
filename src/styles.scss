@@ -1,1 +1,156 @@
-/* You can add global styles to this file, and also import other style files */
+/* =========================================
+   IMPORTAÇÃO DE FONTES E TEMA BASE
+   ========================================= */
+@import '@angular/material/prebuilt-themes/indigo-pink.css'; 
+/* Adicionei a fonte 'Inter' junto com a Roboto para aquele toque Premium */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+/* ========================================================
+   💎 DNA MINIMALISTA EXECUTIVO (FUNDO E FONTES)
+   ======================================================== */
+html, body { 
+  height: 100%; 
+  scroll-behavior: smooth; /* Deixa a descida macia como um aplicativo */
+}
+
+body { 
+  margin: 0; 
+  /* Inter como fonte principal, dando um visual muito mais moderno */
+  font-family: 'Inter', 'Roboto', "Helvetica Neue", sans-serif; 
+  /* Fundo Gelo Elegante */
+  background-color: #f0f4f8 !important; 
+}
+
+/* =========================================
+   ANIMAÇÕES GLOBAIS DO SISTEMA
+   ========================================= */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Força o design arredondado e com sombra de levitação em TODOS os cartões */
+mat-card, .mat-mdc-card {
+  animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  border-radius: 16px !important; /* Bordas bem redondinhas estilo Apple */
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important; /* Sombra translúcida */
+}
+
+.cards-grid mat-card:nth-child(1), .appointment-card:nth-child(1) { animation-delay: 0.1s; }
+.cards-grid mat-card:nth-child(2), .appointment-card:nth-child(2) { animation-delay: 0.2s; }
+.cards-grid mat-card:nth-child(3), .appointment-card:nth-child(3) { animation-delay: 0.3s; }
+.cards-grid mat-card:nth-child(4), .appointment-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Efeito hover magnético (TIREI O .login-card DAQUI PARA ELE PARAR DE PULAR) */
+.appointment-card, .admin-card, .perfil-card, .stat-card, .banner-card {
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease !important;
+  
+  &:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+/* ========================================================
+   💎 BOTÕES E INPUTS DE ELITE
+   ======================================================== */
+button, .mat-mdc-raised-button {
+  transition: all 0.2s ease-in-out !important;
+  border-radius: 10px !important; /* Sai o quadrado, entra o botão fofinho */
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+
+  &:active {
+    transform: scale(0.95) !important; 
+  }
+}
+
+/* Inputs e Caixas de Texto Mais Limpos */
+.mdc-text-field--outlined .mdc-notched-outline {
+  opacity: 0.7; /* Suaviza as linhas do formulário */
+}
+.mat-mdc-form-field {
+  border-radius: 12px !important;
+}
+
+/* ========================================================
+   🎨 SCROLLBAR CUSTOMIZADA (ESTILO MAC/ENTERPRISE)
+   ======================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f4f8; /* Ajustei pro mesmo tom Gelo da tela nova */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b0bec5; 
+  border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3F51B5; 
+}
+/* ========================================================
+   💎 DNA MINIMALISTA EXECUTIVO (GLOBAL)
+   ======================================================== */
+
+/* 1. O Fundo 'Gelo' (Saindo do cinza forte para um quase branco) */
+body, html {
+  background-color: #f8fafc !important; /* Esse cinza/azulado super claro de image_24.png */
+  font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+  scroll-behavior: smooth; 
+}
+
+/* 2. Cartões Flutuantes e Arredondados (Nubank/Apple Style) */
+/* Isso vai pegar TODOS os mat-card do seu sistema de uma vez só */
+.mat-mdc-card, mat-card {
+  border-radius: 16px !important; /* Bordas bem redondinhas */
+  border: none !important;
+  background: #ffffff !important;
+  /* Uma sombra grande, espalhada e super transparente pra dar ideia de levitação */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease !important;
+  overflow: hidden !important; 
+}
+
+/* Efeito hover suave: os cartões pulam levemente quando passa o mouse */
+.admin-card:hover, .appointment-card:hover, .stat-card:hover, .banner-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 3. Botões Mais Elegantes e Clicáveis */
+.mat-mdc-raised-button, .mat-mdc-button {
+  border-radius: 10px !important; /* Sai o botão quadrado, entra o botão fofinho */
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+
+/* ========================================================
+   🎨 SCROLLBAR CUSTOMIZADA
+   ======================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfd8dc; 
+  border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3F51B5; 
+}
