@@ -15,14 +15,6 @@
 * **💅 Design Premium & UX:** Interface responsiva construída com Glassmorphism, micro-interações fluidas e foco total no bem-estar do usuário.
 
 ---
-## 👨‍💻 Programadores
-
-Feito por Pedro Fernandes Bahia Rocha
-
-* **💻 Desenvolvedor Fullstack: Responsável pela arquitetura do projeto em Angular 21, utilizando componentes Standalone, lógica de roteamento avançada e integração de serviços em tempo real com Firebase.
-* **🎨 UI/UX Designer: Criador de toda a identidade visual do projeto, aplicando conceitos de Glassmorphism e micro-interações fluidas para proporcionar uma experiência acolhedora e moderna ao cidadão.
-* **🔥 Especialista em Banco de Dados / Firebase: Implementação e estruturação do banco de dados NoSQL no Firestore, sistema de autenticação segura e regras de segurança para proteção de dados sensíveis.
-
 ## 🚀 Tecnologias Utilizadas
 
 Este projeto foi construído com as melhores e mais modernas tecnologias do mercado:
@@ -30,6 +22,15 @@ Este projeto foi construído com as melhores e mais modernas tecnologias do merc
 * **Frontend:** Angular 21, TypeScript, SCSS
 * **Backend & Cloud:** Firebase (Authentication, Firestore, Hosting)
 * **Design System:** Material Icons & UI Responsiva Customizada
+
+
+## 👨‍💻 Programadores
+
+Feito por Pedro Fernandes Bahia Rocha
+
+* **💻 Desenvolvedor Fullstack: Responsável pela arquitetura do projeto em Angular 21, utilizando componentes Standalone, lógica de roteamento avançada e integração de serviços em tempo real com Firebase.
+* **🎨 UI/UX Designer: Criador de toda a identidade visual do projeto, aplicando conceitos de Glassmorphism e micro-interações fluidas para proporcionar uma experiência acolhedora e moderna ao cidadão.
+* **🔥 Especialista em Banco de Dados / Firebase: Implementação e estruturação do banco de dados NoSQL no Firestore, sistema de autenticação segura e regras de segurança para proteção de dados sensíveis.
 
 ---
 
