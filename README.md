@@ -21,7 +21,6 @@
 Este projeto foi construído com as melhores e mais modernas tecnologias do mercado:
 
 * **Frontend:** Angular 21, TypeScript, SCSS
-* **Mobile Nativo:** Capacitor (Pronto para gerar `.apk` Android e iOS)
 * **Backend & Cloud:** Firebase (Authentication, Firestore, Hosting)
 * **Design System:** Material Icons & UI Responsiva Customizada
 
