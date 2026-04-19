@@ -15,13 +15,13 @@
 * **💅 Design Premium & UX:** Interface responsiva construída com Glassmorphism, micro-interações fluidas e foco total no bem-estar do usuário.
 
 ---
-## 🚀 Tecnologias Utilizadas
+## 👨‍💻 Programadores
 
 Este projeto foi construído com as melhores e mais modernas tecnologias do mercado:
 
-* **Frontend:** Angular 21, TypeScript, SCSS
-* **Backend & Cloud:** Firebase (Authentication, Firestore, Hosting)
-* **Design System:** Material Icons & UI Responsiva Customizada
+* **💻 Desenvolvedor Fullstack: Responsável pela arquitetura do projeto em Angular 21, utilizando componentes Standalone, lógica de roteamento avançada e integração de serviços em tempo real com Firebase.
+* **🎨 UI/UX Designer: Criador de toda a identidade visual do projeto, aplicando conceitos de Glassmorphism e micro-interações fluidas para proporcionar uma experiência acolhedora e moderna ao cidadão.
+* **🔥 Especialista em Banco de Dados / Firebase: Implementação e estruturação do banco de dados NoSQL no Firestore, sistema de autenticação segura e regras de segurança para proteção de dados sensíveis.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -61,11 +61,8 @@ npm install --legacy-peer-deps
 # Inicie o servidor local de desenvolvimento
 ng serve
 ```
----
-👨‍💻 Programadores
-Mano, agora o papo é reto! Peguei tudo o que a gente construiu, juntei com o teu texto original e transformei num README.md de elite. Sem cortes, sem enrolação, tudo num bloco só para tu copiar e colar.
 
-A seção de Programadores agora está detalhada, com ícones e explicando exatamente o que tu fez no código, no design e no banco de dados.
+
 
 
 
