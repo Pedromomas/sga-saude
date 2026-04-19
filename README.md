@@ -17,7 +17,7 @@
 ---
 ## 👨‍💻 Programadores
 
-Este projeto foi construído com as melhores e mais modernas tecnologias do mercado:
+Feito por Pedro Fernandes Bahia Rocha
 
 * **💻 Desenvolvedor Fullstack: Responsável pela arquitetura do projeto em Angular 21, utilizando componentes Standalone, lógica de roteamento avançada e integração de serviços em tempo real com Firebase.
 * **🎨 UI/UX Designer: Criador de toda a identidade visual do projeto, aplicando conceitos de Glassmorphism e micro-interações fluidas para proporcionar uma experiência acolhedora e moderna ao cidadão.
