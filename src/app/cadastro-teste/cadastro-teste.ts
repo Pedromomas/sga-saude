@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,89 +22,91 @@ export class CadastroTesteComponent implements AfterViewInit, OnDestroy {
   // Controles da Tela
   erro = ''; mensagemSucesso = ''; isLoading = false; buscandoCep = false; mostrarSenha = false;
 
-  constructor(private auth: Auth, private firestore: Firestore, private router: Router) {}
+  // Variáveis para o LERP (60/120 FPS Fluid Animations)
+  private mouseX = window.innerWidth / 2;
+  private mouseY = window.innerHeight / 2;
+  private cardShadowX = 0; private cardShadowY = 0;
+  private btnPosX = 0; private btnPosY = 0;
+  private btnTargetX = 0; private btnTargetY = 0;
+  private animationFrameId!: number;
+  private mouseMoveHandler: any;
 
-  // --- INTERATIVIDADE JAVASCRIPT (Os detalhes bobos mágicos) ---
+  constructor(
+    private auth: Auth, 
+    private firestore: Firestore, 
+    private router: Router,
+    private cdr: ChangeDetectorRef // Adicionado para forçar a tela a mostrar o erro rápido
+  ) {}
+
   ngAfterViewInit() {
-    this.ativarEfeitoSombraCard();
-    this.ativarEfeitoMagneticoBotao();
+    this.iniciarMotoresGpu();
   }
 
   ngOnDestroy() {
-    // Removemos os ouvintes para não pesar a memória
     document.removeEventListener('mousemove', this.mouseMoveHandler);
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
   }
 
-  // Ouvinte do mouse salvo para remoção posterior
-  private mouseMoveHandler: any;
-
-  // 1. Sombra do Card que persegue o mouse
-  private ativarEfeitoSombraCard() {
+  private iniciarMotoresGpu() {
     const card = document.getElementById('cadastroCard');
-    if (!card) return;
+    const btn = document.getElementById('btnFinalizar');
 
     this.mouseMoveHandler = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
+      this.mouseX = e.clientX;
+      this.mouseY = e.clientY;
 
-      const xOffset = (clientX - innerWidth / 2) / 40;
-      const yOffset = (clientY - innerHeight / 2) / 40;
-
-      card.style.boxShadow = `${xOffset}px ${yOffset}px 50px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.8)`;
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        if (e.clientX > rect.left - 50 && e.clientX < rect.right + 50 && e.clientY > rect.top - 50 && e.clientY < rect.bottom + 50) {
+          this.btnTargetX = (e.clientX - (rect.left + rect.width / 2)) * 0.3;
+          this.btnTargetY = (e.clientY - (rect.top + rect.height / 2)) * 0.3;
+        } else {
+          this.btnTargetX = 0;
+          this.btnTargetY = 0;
+        }
+      }
     };
-
     document.addEventListener('mousemove', this.mouseMoveHandler);
+
+    const renderLoop = () => {
+      const targetShadowX = (this.mouseX - window.innerWidth / 2) / 40;
+      const targetShadowY = (this.mouseY - window.innerHeight / 2) / 40;
+      this.cardShadowX += (targetShadowX - this.cardShadowX) * 0.05;
+      this.cardShadowY += (targetShadowY - this.cardShadowY) * 0.05;
+
+      if (card) { card.style.boxShadow = `${this.cardShadowX}px ${this.cardShadowY}px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)`; }
+
+      this.btnPosX += (this.btnTargetX - this.btnPosX) * 0.1;
+      this.btnPosY += (this.btnTargetY - this.btnPosY) * 0.1;
+
+      if (btn && !this.isLoading) { btn.style.transform = `translate3d(${this.btnPosX}px, ${this.btnPosY}px, 0)`; }
+      this.animationFrameId = requestAnimationFrame(renderLoop);
+    };
+    renderLoop();
   }
 
-  // 2. Botão que persegue levemente o mouse (Efeito Magnético)
-  private ativarEfeitoMagneticoBotao() {
-    const btn = document.getElementById('btnFinalizar');
-    if (!btn) return;
-
-    btn.addEventListener('mousemove', (e: MouseEvent) => {
-      const { x, y, width, height } = btn.getBoundingClientRect();
-      const mx = e.clientX - (x + width / 2);
-      const my = e.clientY - (y + height / 2);
-      
-      btn.style.transform = `translate(${mx * 0.2}px, ${my * 0.2}px)`;
-    });
-
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = `translate(0px, 0px)`;
-    });
-  }
-
-  // 3. Chuva de Confetes no Sucesso
   private dispararConfetes() {
     const container = document.getElementById('confettiEffect');
     if (!container) return;
-
     container.classList.add('active');
-    
-    for (let i = 0; i < 50; i++) {
+    const colors = ['#2563eb', '#60a5fa', '#10b981', '#f59e0b', '#ef4444'];
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < 30; i++) {
       const confetti = document.createElement('div');
       confetti.style.position = 'absolute';
-      confetti.style.width = '10px';
-      confetti.style.height = '10px';
-      
-      const colors = ['#2563eb', '#60a5fa', '#10b981', '#f59e0b', '#ef4444'];
+      confetti.style.width = '8px'; confetti.style.height = '8px';
       confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-      
-      confetti.style.left = Math.random() * 100 + 'vw';
-      confetti.style.top = Math.random() * -20 + 'px';
-      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-      confetti.style.animation = `confettiFall ${Math.random() * 2 + 1}s linear forwards`;
+      confetti.style.left = Math.random() * 100 + 'vw'; confetti.style.top = '-20px';
+      confetti.style.animation = `confettiFall ${Math.random() * 2 + 1.5}s linear forwards`;
       confetti.style.opacity = (Math.random() * 0.5 + 0.5).toString();
-
-      container.appendChild(confetti);
+      fragment.appendChild(confetti);
     }
+    container.appendChild(fragment);
   }
 
-  // --- LÓGICA DO FORMULÁRIO ---
-  
   toggleSenha() { this.mostrarSenha = !this.mostrarSenha; }
 
-  // 4. Força da senha visual
   getForcaSenha(): string {
     if (!this.senha) return '';
     if (this.senha.length < 6) return 'weak';
@@ -112,26 +114,18 @@ export class CadastroTesteComponent implements AfterViewInit, OnDestroy {
     return 'strong';
   }
 
-  // 5. Máscaras Dinâmicas Visuais (CPF e Telefone)
   formatarCPF(event: string) {
     let valor = event.replace(/\D/g, '');
-    if (valor.length <= 11) {
-      this.cpf = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '\$1.\$2.\$3-\$4');
-    }
+    if (valor.length <= 11) { this.cpf = valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '\$1.\$2.\$3-\$4'); }
   }
 
   formatarTelefone(event: string) {
     let valor = event.replace(/\D/g, '');
-    if (valor.length === 11) {
-      this.telefone = valor.replace(/(\d{2})(\d{5})(\d{4})/g, '(\$1) \$2-\$3');
-    } else if (valor.length === 10) {
-      this.telefone = valor.replace(/(\d{2})(\d{4})(\d{4})/g, '(\$1) \$2-\$3');
-    } else {
-      this.telefone = valor;
-    }
+    if (valor.length === 11) { this.telefone = valor.replace(/(\d{2})(\d{5})(\d{4})/g, '(\$1) \$2-\$3'); } 
+    else if (valor.length === 10) { this.telefone = valor.replace(/(\d{2})(\d{4})(\d{4})/g, '(\$1) \$2-\$3'); } 
+    else { this.telefone = valor; }
   }
 
-  // Busca CEP Automatizada ViaCEP
   async buscarCep() {
     this.buscandoCep = true;
     const cepLimpo = this.cep.replace(/\D/g, '');
@@ -148,66 +142,70 @@ export class CadastroTesteComponent implements AfterViewInit, OnDestroy {
     this.buscandoCep = false;
   }
 
-  // Cadastro Seguro no Firebase (Integrado ao Banco Antigo)
   async cadastrar() {
     this.erro = ''; this.mensagemSucesso = '';
+    
+    // Tratamento de espaços acidentais no email
+    this.email = this.email.trim();
     const cpfLimpo = this.cpf.replace(/\D/g, '');
     
-    // Validações simples
-    if (!this.nome || cpfLimpo.length !== 11 || !this.email || this.senha.length < 6 || !this.numero) {
-      this.erro = 'Revise os campos. Nome completo, CPF válido e senha forte são obrigatórios.';
-      return;
-    }
+    // Validações bem específicas para você saber exatamente o que faltou digitar
+    if (!this.nome || this.nome.length < 5) { this.erro = 'Digite o nome completo (mín. 5 letras).'; return; }
+    if (cpfLimpo.length !== 11) { this.erro = 'Digite um CPF válido com 11 números.'; return; }
+    if (!this.dataNascimento) { this.erro = 'Preencha a data de nascimento.'; return; }
+    if (!this.email || !this.email.includes('@')) { this.erro = 'Digite um e-mail válido com @.'; return; }
+    if (!this.senha || this.senha.length < 6) { this.erro = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
+    if (!this.cep || !this.rua || !this.numero) { this.erro = 'Preencha o CEP e o Número do seu endereço.'; return; }
 
     this.isLoading = true;
+    this.cdr.detectChanges(); // Força a tela a atualizar e mostrar o loading
 
     try {
-      // 1. Auth: Criar login
       const cred = await createUserWithEmailAndPassword(this.auth, this.email, this.senha);
       
-      // Limpar as máscaras para salvar só os números (igual ao banco antigo)
       const telefoneLimpo = this.telefone.replace(/\D/g, ''); 
       const cepLimpo = this.cep.replace(/\D/g, '');
 
-      // 2. Firestore: Salvar dados com a EXATA estrutura do usuário antigo
       await setDoc(doc(this.firestore, 'usuarios', cred.user.uid), {
         nomeCompleto: this.nome,             
         cpf: cpfLimpo,
         cns: this.cartaoSus || '',           
         telefone: telefoneLimpo,
         email: this.email,
-        
-        // Endereço no padrão antigo
         cep: cepLimpo,
         endereco: this.rua,                  
         numero: this.numero,
-        
-        // Campos de sistema do banco antigo
         criadoEm: new Date().toLocaleString('pt-BR'), 
         cargo: 'paciente',                   
         unidadeTrabalho: 'Nenhuma',          
         photoURL: '',                        
-        
-        // Bônus: Mantemos a data de nascimento e os dados extras de endereço
-        // caso você precise melhorar o sistema no futuro sem quebrar nada agora
         dataNascimento: this.dataNascimento,
         bairro: this.bairro,
         cidade: this.cidade,
         uf: this.uf
       });
 
-      // MÁGICA FINAL: Confetes e Sucesso
       this.dispararConfetes();
-      this.mensagemSucesso = 'Conta criada com sucesso! O Portal SUS te dá as boas-vindas.';
+      this.mensagemSucesso = 'Conta criada com sucesso! Redirecionando...';
+      this.cdr.detectChanges();
       
       setTimeout(() => {
         this.router.navigate(['/dashboard-teste']);
-      }, 2500);
+      }, 2000);
 
     } catch (e: any) {
+      console.error(e);
+      // 🔥 AQUI O CÓDIGO TE AVISA SE VOCÊ ESQUECEU DE APAGAR O AUTH DO FIREBASE 🔥
+      if (e.code === 'auth/email-already-in-use') { 
+        this.erro = 'Este e-mail já existe no Firebase Authentication. Exclua a conta lá também!'; 
+      } else if (e.code === 'auth/invalid-email') {
+        this.erro = 'Formato de e-mail inválido.';
+      } else { 
+        this.erro = 'Erro de conexão com o banco. Tente novamente.'; 
+      }
+    } finally {
       this.isLoading = false;
-      if (e.code === 'auth/email-already-in-use') { this.erro = 'Este e-mail já possui cadastro.'; }
-      else { this.erro = 'Erro desconhecido no Firebase.'; }
+      this.cdr.detectChanges();
     }
   }
 

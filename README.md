@@ -1,10 +1,17 @@
-# 🏥 SGA Saúde - Sistema Inteligente para o SUS Digital
+# 🏥 SGA Saúde — Gestão Inteligente para o SUS Digital
 
 <div align="center">
-  O <b>SGA Saúde</b> é uma plataforma moderna de gestão e agendamento médico desenvolvida para revolucionar a experiência do paciente no Sistema Único de Saúde (SUS). O foco principal é eliminar filas de espera na madrugada, otimizar vagas canceladas e trazer o histórico médico para a palma da mão do usuário com uma interface de altíssimo nível.
+  <img src="https://img.shields.io/badge/Angular%2021-DD0031?style=for-the-badge&logo=angular&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white" />
 </div>
 
 <br>
+
+O **SGA Saúde** é uma plataforma moderna de gestão e agendamento médico desenvolvida para revolucionar a experiência do paciente no Sistema Único de Saúde (SUS). O foco principal é eliminar filas de espera na madrugada, otimizar vagas canceladas e trazer o histórico médico para a palma da mão do usuário com uma interface de altíssimo nível.
+
+---
 
 ## ✨ Funcionalidades Principais
 
@@ -19,9 +26,7 @@
 ## 🚀 Tecnologias Utilizadas
 
 Este projeto foi construído com as melhores e mais modernas tecnologias do mercado:
-
 * **Frontend:** Angular 21, TypeScript, SCSS
-* **Mobile Nativo:** Capacitor (Pronto para gerar `.apk` Android e iOS)
 * **Backend & Cloud:** Firebase (Authentication, Firestore, Hosting)
 * **Design System:** Material Icons & UI Responsiva Customizada
 
@@ -29,28 +34,43 @@ Este projeto foi construído com as melhores e mais modernas tecnologias do merc
 
 ## 🛠️ Como rodar o projeto na sua máquina
 
-Para rodar esse projeto localmente e ver a mágica acontecendo, siga o passo a passo abaixo. 
+Para rodar esse projeto localmente e ver a mágica acontecendo, siga o passo a passo abaixo.
 
 ### 1. Pré-requisitos
 Certifique-se de ter instalado em sua máquina:
-* [Node.js](https://nodejs.org/) (Versão LTS recomendada)
-* [Angular CLI](https://angular.io/cli) (Instale globalmente rodando `npm install -g @angular/cli`)
-* Git
+* **Node.js** (Versão LTS recomendada)
+* **Angular CLI** (`npm install -g @angular/cli`)
+* **Git**
 
 ### 2. Passo a passo no Terminal
-
 Abra o seu terminal e execute os comandos abaixo, um por um:
 
 ```bash
 # Clone este repositório para a sua máquina
-git clone [https://github.com/SEU_USUARIO/sga-saude.git](https://github.com/SEU_USUARIO/sga-saude.git)
+git clone [https://github.com/Pedromomas/sga-saude.git](https://github.com/Pedromomas/sga-saude.git)
 
 # Entre na pasta do projeto
 cd sga-saude
 
 # Instale todas as dependências do projeto 
-# (Utilizamos --legacy-peer-deps para garantir a compatibilidade do Angular com o Firebase)
 npm install --legacy-peer-deps
 
 # Inicie o servidor local de desenvolvimento
 ng serve
+👨‍💻 Programadores
+Nesta seção, detalho minha atuação em todas as frentes de criação deste ecossistema:
+
+Pedro Fernandes Bahia Rocha
+💻 Desenvolvedor Fullstack: Responsável pela arquitetura do projeto em Angular 21, utilizando componentes Standalone, lógica de roteamento avançada e integração de serviços em tempo real com Firebase.
+
+🎨 UI/UX Designer: Criador de toda a identidade visual do projeto, aplicando conceitos de Glassmorphism e micro-interações fluidas para proporcionar uma experiência acolhedora e moderna ao cidadão.
+
+🔥 Especialista em Banco de Dados / Firebase: Implementação e estruturação do banco de dados NoSQL no Firestore, sistema de autenticação segura e regras de segurança para proteção de dados sensíveis.
+
+<div align="center">
+<b>Idealizado e desenvolvido com 🩵 por Pedro Fernandes Bahia Rocha</b>
+
+
+
+<i>Projeto voltado para Inovação e Gestão de Software na Saúde Pública.</i>
+</div>

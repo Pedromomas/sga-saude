@@ -17,38 +17,38 @@ $text-muted: #64748b;
   font-family: 'Inter', sans-serif; box-sizing: border-box;
 }
 
-/* --- LUZES DINÂMICAS DE FUNDO --- */
-.ambient-glow {
-  position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5;
-  animation: driftAmbient 15s infinite alternate ease-in-out; z-index: 0;
+/* --- LUZES AMBIENTES ANIMADAS IGUAIS AO LOGIN (FUNDO) --- */
+.ambient-light {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
+  animation: drift 12s infinite alternate ease-in-out; z-index: 0;
 }
-.glow-1 { width: 600px; height: 600px; background: rgba(37, 99, 235, 0.3); top: -15%; left: -10%; }
-.glow-2 { width: 500px; height: 500px; background: rgba(16, 185, 129, 0.25); bottom: -10%; right: -5%; animation-delay: -7s; }
+.light-1 { width: 600px; height: 600px; background: rgba(37, 99, 235, 0.3); top: -15%; left: -10%; }
+.light-2 { width: 500px; height: 500px; background: rgba(16, 185, 129, 0.25); bottom: -10%; right: -5%; animation-delay: -5s; }
+.light-3 { width: 300px; height: 300px; background: rgba(56, 189, 248, 0.3); top: 40%; left: 40%; animation-delay: -2s; }
 
-@keyframes driftAmbient {
+@keyframes drift {
   0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(80px, -50px) scale(1.1); }
+  100% { transform: translate(60px, -40px) scale(1.1); }
 }
 
-/* --- O CARD DE VIDRO PREMIUM (Refinado) --- */
+/* --- O CARD DE VIDRO PREMIUM --- */
 .glass-panel {
   position: relative; z-index: 10;
-  width: 100%; max-width: 660px; /* Mais fino e elegante */
+  width: 100%; max-width: 660px; 
   background: $glass; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255, 255, 255, 1);
-  border-radius: 20px; /* Bordas menos arredondadas */
-  padding: 36px 32px; /* Menos "gordura" nas laterais */
-  box-shadow: 0 20px 50px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
-  transition: box-shadow 0.1s ease-out; 
+  border-radius: 20px; 
+  padding: 36px 32px; 
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 
-.enter-anim { animation: popUpIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes popUpIn {
-  from { opacity: 0; transform: translateY(30px) scale(0.98); }
+.enter-anim { animation: popUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* --- CABEÇALHO (Proporções menores) --- */
+/* --- CABEÇALHO --- */
 .panel-header {
   text-align: center; margin-bottom: 28px;
   
@@ -57,20 +57,18 @@ $text-muted: #64748b;
     background: linear-gradient(135deg, $primary, $primary-light);
     border-radius: 14px; display: flex; align-items: center; justify-content: center;
     color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-    mat-icon { font-size: 26px; width: 26px; height: 26px; animation: heartbeatIcon 3s ease-in-out infinite; }
+    mat-icon { font-size: 26px; width: 26px; height: 26px; animation: floatIcon 3s ease-in-out infinite alternate; }
   }
-  
   h2 { font-size: 22px; font-weight: 800; color: $text-main; margin: 0 0 4px; letter-spacing: -0.5px; }
   p { font-size: 13px; color: $text-muted; font-weight: 500; margin: 0; }
 }
 
-@keyframes heartbeatIcon {
-  0%, 100% { transform: scale(1); }
-  10%, 30% { transform: scale(1.1); }
-  20% { transform: scale(1.15); }
+@keyframes floatIcon {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
 }
 
-/* --- O GRID DO FORMULÁRIO (Mais apertadinho) --- */
+/* --- O GRID DO FORMULÁRIO --- */
 .form-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
   @media (max-width: 600px) { grid-template-columns: 1fr; }
@@ -83,17 +81,13 @@ $text-muted: #64748b;
   span { padding: 0 12px; font-size: 11px; font-weight: 800; color: $primary; text-transform: uppercase; letter-spacing: 1px; }
 }
 
-/* --- INPUTS PREMIUM (Sleek Design) --- */
+/* --- INPUTS PREMIUM --- */
 .input-field-premium {
   position: relative; display: flex; align-items: center;
-  background: #f1f5f9; border-radius: 12px; 
-  height: 48px; /* Era 60px, agora tá perfeito */
+  background: #f1f5f9; border-radius: 12px; height: 48px; 
   padding: 0 16px; transition: 0.3s;
   
-  .field-icon {
-    color: #94a3b8; font-size: 20px; width: 20px; height: 20px; margin-right: 12px;
-    transition: 0.3s ease-out;
-  }
+  .field-icon { color: #94a3b8; font-size: 20px; width: 20px; height: 20px; margin-right: 12px; transition: 0.3s; }
   
   input {
     flex: 1; height: 100%; background: transparent; border: none; outline: none;
@@ -107,11 +101,11 @@ $text-muted: #64748b;
     border-radius: 2px;
   }
 
-  &.field-valid .field-icon { color: $success; animation: pulseSuccess 1s ease-out; }
+  &.field-valid .field-icon { color: $success; }
 
   &:focus-within {
     background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    .field-icon { color: $primary; transform: scale(1.1) translateX(-1px); }
+    .field-icon { color: $primary; transform: scale(1.1); }
     .focus-underline { width: calc(100% - 32px); }
   }
 
@@ -125,13 +119,11 @@ $text-muted: #64748b;
   }
 }
 
-@keyframes pulseSuccess { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 @keyframes spinMe { to { transform: rotate(360deg); } }
 
 /* Força da Senha */
 .password-strength-bar {
-  grid-column: 1 / -1; height: 3px; background: #e2e8f0; border-radius: 2px; margin-top: -12px; margin-bottom: 8px;
-  overflow: hidden; position: relative;
+  grid-column: 1 / -1; height: 3px; background: #e2e8f0; border-radius: 2px; margin-top: -12px; margin-bottom: 8px; overflow: hidden;
   .strength-fill {
     height: 100%; width: 0; transition: 0.4s ease-out;
     &.weak { width: 33%; background: $error; }
@@ -140,43 +132,43 @@ $text-muted: #64748b;
   }
 }
 
-/* --- ALERTAS (Mais compactos) --- */
+/* --- ALERTAS --- */
 .alert-box {
   display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-radius: 10px;
-  font-size: 13px; font-weight: 600; margin-bottom: 20px; animation: shakeError 0.4s;
+  font-size: 13px; font-weight: 600; margin-bottom: 20px; animation: shake 0.4s;
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
   &.error { background: #fef2f2; color: $error; border-left: 4px solid $error; }
-  &.success { background: #ecfdf5; color: $success; border-left: 4px solid $success; animation: popUpIn 0.4s forwards; }
+  &.success { background: #ecfdf5; color: $success; border-left: 4px solid $success; animation: popUp 0.4s; }
 }
 
-@keyframes shakeError { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-/* --- BOTÃO PRINCIPAL MAGNÉTICO (Ajustado) --- */
-.btn-magnetic-glow {
+/* --- BOTÃO PRINCIPAL (GLOW DO LOGIN) --- */
+.btn-glow {
   position: relative; display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; height: 52px; border: none; border-radius: 12px;
+  width: 100%; height: 56px; border: none; border-radius: 14px;
   background: linear-gradient(135deg, $primary, $primary-light); color: white;
   font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+  overflow: hidden; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
 
   &::after {
     content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    animation: sweepBeam 3s infinite;
+    animation: sweep 3s infinite;
   }
 
-  mat-icon { font-size: 20px; width: 20px; height: 20px; transition: 0.3s; }
+  .arrow-icon { transition: 0.3s; }
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px); box-shadow: 0 15px 25px rgba(37, 99, 235, 0.35); filter: brightness(1.05);
-    mat-icon { transform: translateX(4px); }
+    transform: translateY(-2px); box-shadow: 0 15px 25px rgba(37, 99, 235, 0.4); filter: brightness(1.1);
+    .arrow-icon { transform: translateX(4px); } 
   }
 
   &:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; &::after { display: none; } }
 }
-@keyframes sweepBeam { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
 
-.loader-spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spinMe 1s linear infinite; }
+@keyframes sweep { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+.loader-spinner { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spinMe 1s linear infinite; }
 
 /* --- RODAPÉ --- */
 .panel-footer {
@@ -187,10 +179,8 @@ $text-muted: #64748b;
     span { padding: 0 12px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
   }
   .btn-outline-muted {
-    width: 100%; height: 48px; background: transparent;
-    border: 2px solid #e2e8f0; border-radius: 12px;
-    color: $text-main; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: 0.2s;
+    width: 100%; height: 48px; background: transparent; border: 2px solid #e2e8f0; border-radius: 12px;
+    color: $text-main; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s;
     &:hover { border-color: $text-muted; background: #f8fafc; color: $primary; }
   }
 }
@@ -199,6 +189,7 @@ $text-muted: #64748b;
 .confetti-container {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   z-index: 1000; pointer-events: none; overflow: hidden;
-  &.active { animation: confettiFall 2s ease-out forwards; }
+  &.active { animation: confettiFadeOut 4s ease-out forwards; }
 }
-@keyframes confettiFall { to { transform: translateY(100vh); opacity: 0; } }
+@keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); } 100% { transform: translateY(100vh) rotate(720deg); } }
+@keyframes confettiFadeOut { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }

@@ -1,10 +1,12 @@
 <div class="super-cadastro-container">
   <div class="confetti-container" id="confettiEffect"></div>
 
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
+  <!-- Luzes ambientes IGUAIS as do login-teste -->
+  <div class="ambient-light light-1"></div>
+  <div class="ambient-light light-2"></div>
+  <div class="ambient-light light-3"></div>
 
-  <div class="glass-panel enter-anim" id="cadastroCard">
+  <div class="glass-panel enter-anim">
     
     <div class="panel-header">
       <div class="brand-emblem">
@@ -76,7 +78,7 @@
 
       <div class="input-field-premium">
         <mat-icon class="field-icon">lock_open</mat-icon>
-        <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Crie uma Senha Forte">
+        <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Crie uma Senha Forte" (keydown.enter)="cadastrar()">
         <button class="btn-eye" (click)="toggleSenha()" type="button" tabindex="-1">
           <mat-icon>{{ mostrarSenha ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
@@ -87,17 +89,20 @@
         <div class="strength-fill" [ngClass]="getForcaSenha()"></div>
       </div>
 
-    </div> <div class="alert-box error" *ngIf="erro">
+    </div> 
+    
+    <div class="alert-box error" *ngIf="erro">
       <mat-icon>error_outline</mat-icon> <span>{{ erro }}</span>
     </div>
     <div class="alert-box success" *ngIf="mensagemSucesso">
       <mat-icon>verified</mat-icon> <span>{{ mensagemSucesso }}</span>
     </div>
 
-    <button class="btn-magnetic-glow" (click)="cadastrar()" [disabled]="isLoading" id="btnFinalizar">
+    <!-- Usando o mesmo botão GLOW suave do login -->
+    <button class="btn-glow" (click)="cadastrar()" [disabled]="isLoading">
       <span *ngIf="!isLoading">Finalizar Cadastro Seguro</span>
       <span *ngIf="isLoading" class="loader-spinner"></span>
-      <mat-icon *ngIf="!isLoading">fingerprint</mat-icon>
+      <mat-icon *ngIf="!isLoading" class="arrow-icon">arrow_right_alt</mat-icon>
     </button>
 
     <div class="panel-footer">

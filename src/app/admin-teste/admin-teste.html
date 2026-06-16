@@ -1,10 +1,15 @@
 <div class="admin-wrapper" [class.emergency-mode]="protocoloEmergenciaAtivo">
   <aside class="sidebar">
-    <div class="brand"><div class="logo-box"><mat-icon>admin_panel_settings</mat-icon></div><h2>Portal SUS</h2><span class="badge" [ngClass]="nivelAcesso">{{ nivelAcesso }}</span></div>
+    <div class="brand">
+      <div class="logo-box"><mat-icon>admin_panel_settings</mat-icon></div>
+      <h2>Portal SUS</h2>
+      <span class="badge">{{ nivelAcesso }}</span>
+    </div>
     <nav class="nav-menu">
       <button [class.active]="abaAtiva === 'dashboard'" (click)="setAba('dashboard')"><mat-icon>insights</mat-icon> Visão Geral</button>
       <button [class.active]="abaAtiva === 'fila'" (click)="setAba('fila')"><mat-icon>view_timeline</mat-icon> Fila em Tempo Real</button>
       <button [class.active]="abaAtiva === 'repasse'" (click)="setAba('repasse')"><mat-icon>autorenew</mat-icon> Repasse de Vagas</button>
+      <button *ngIf="podeGerenciarVacinacao()" [class.active]="abaAtiva === 'vacinacao'" (click)="setAba('vacinacao')"><mat-icon>vaccines</mat-icon> Gestão de Vacinas</button>
       <button [class.active]="abaAtiva === 'mural'" (click)="setAba('mural')"><mat-icon>campaign</mat-icon> Gestão de Avisos</button>
       <button *ngIf="podeVerEquipe()" [class.active]="abaAtiva === 'equipe'" (click)="setAba('equipe')"><mat-icon>shield_person</mat-icon> Gerenciar Staff</button>
       <button *ngIf="nivelAcesso === 'supremo'" [class.active]="abaAtiva === 'config'" (click)="setAba('config')"><mat-icon>tune</mat-icon> Configurações Globais</button>
@@ -12,7 +17,7 @@
     <div class="sidebar-footer"><button class="btn-logout" (click)="sair()"><mat-icon>power_settings_new</mat-icon> Sair</button></div>
   </aside>
 
-  <main class="main-content">
+  <main class="main-content hide-on-print">
     <header class="top-bar">
       <div><h1>Sala de Comando</h1><p>Dados reais extraídos do Firebase Database</p></div>
       <div class="test-controls">
@@ -26,20 +31,65 @@
     <div class="loader-container" *ngIf="isLoading"><div class="spinner"></div></div>
 
     <div class="content-area" *ngIf="!isLoading">
-
+      
       <div *ngIf="abaAtiva === 'dashboard'" class="fade-in">
-        <div class="stats-grid top-cards"><div class="stat-card"><div class="icon-wrap purple"><mat-icon>groups</mat-icon></div><div class="info"><h3>Pacientes Registrados</h3><h2>{{ stats.totalPacientesCadastrados }}</h2></div></div><div class="stat-card"><div class="icon-wrap blue"><mat-icon>calendar_month</mat-icon></div><div class="info"><h3>Total de Consultas</h3><h2>{{ stats.totalAgendamentos }}</h2></div></div><div class="stat-card"><div class="icon-wrap green"><mat-icon>trending_up</mat-icon></div><div class="info"><h3>Taxa de Sucesso</h3><h2>{{ taxaSucesso }}%</h2></div></div></div>
-        <div class="dashboard-columns"><div class="pizza-card glass-box"><h3>Distribuição de Agendamentos</h3><p class="subtitle">Análise completa do banco de dados.</p><div class="pizza-container"><div class="donut-chart" [style.background]="stringGraficoPizza"><div class="donut-inner"><span class="total-number">{{ stats.totalAgendamentos }}</span><span class="total-label">Total</span></div></div><div class="pizza-legend"><div class="legend-item"><div class="dot bg-green"></div><div class="legend-text"><strong>Atendidos:</strong> {{ stats.atendidos }}</div></div><div class="legend-item"><div class="dot bg-blue"></div><div class="legend-text"><strong>Em Atendimento:</strong> {{ stats.emAtendimento }}</div></div><div class="legend-item"><div class="dot bg-orange"></div><div class="legend-text"><strong>Aguardando:</strong> {{ stats.aguardando }}</div></div><div class="legend-item"><div class="dot bg-red"></div><div class="legend-text"><strong>Cancelados:</strong> {{ stats.cancelados }}</div></div></div></div></div><div class="system-health-column"><div class="glass-box sys-status"><h3>Status do Sistema</h3><div class="status-row"><mat-icon class="text-green">wifi</mat-icon> <span>Servidor Firebase: <strong>Online</strong></span></div><div class="status-row"><mat-icon class="text-blue">sync</mat-icon> <span>Sincronização: <strong>Tempo Real</strong></span></div><div class="status-row"><mat-icon class="text-orange">dns</mat-icon> <span>Banco de Dados: <strong>Estável</strong></span></div></div><div class="glass-box sys-activity"><h3>Resumo da Unidade</h3><p>O Portal SUS está operando com {{ stats.totalPacientesCadastrados }} pacientes cadastrados.</p><button class="btn-outline" (click)="setAba('fila')">Ir para Fila ao Vivo</button></div></div></div>
+        <div class="stats-grid top-cards">
+          <div class="stat-card"><div class="icon-wrap purple"><mat-icon>groups</mat-icon></div><div class="info"><h3>Pacientes Registrados</h3><h2>{{ stats.totalPacientesCadastrados }}</h2></div></div>
+          <div class="stat-card"><div class="icon-wrap blue"><mat-icon>calendar_month</mat-icon></div><div class="info"><h3>Total de Consultas</h3><h2>{{ stats.totalAgendamentos }}</h2></div></div>
+          <div class="stat-card"><div class="icon-wrap green"><mat-icon>trending_up</mat-icon></div><div class="info"><h3>Taxa de Sucesso</h3><h2>{{ taxaSucessoProp }}%</h2></div></div>
+        </div>
+        <div class="dashboard-columns">
+          <div class="pizza-card glass-box">
+            <h3>Distribuição de Agendamentos</h3><p class="subtitle">Análise completa do banco de dados.</p>
+            <div class="pizza-container">
+              <div class="donut-chart" [style.background]="stringGraficoPizzaProp"><div class="donut-inner"><span class="total-number">{{ stats.totalAgendamentos }}</span><span class="total-label">Total</span></div></div>
+              <div class="pizza-legend">
+                <div class="legend-item"><div class="dot bg-green"></div><div class="legend-text"><strong>Atendidos:</strong> {{ stats.atendidos }}</div></div>
+                <div class="legend-item"><div class="dot bg-blue"></div><div class="legend-text"><strong>Em Atendimento:</strong> {{ stats.emAtendimento }}</div></div>
+                <div class="legend-item"><div class="dot bg-orange"></div><div class="legend-text"><strong>Aguardando:</strong> {{ stats.aguardando }}</div></div>
+                <div class="legend-item"><div class="dot bg-red"></div><div class="legend-text"><strong>Cancelados:</strong> {{ stats.cancelados }}</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="system-health-column">
+            <div class="glass-box sys-status">
+              <h3>Status do Sistema</h3>
+              <div class="status-row"><mat-icon class="text-green">wifi</mat-icon> <span>Servidor Firebase: <strong>Online</strong></span></div>
+              <div class="status-row"><mat-icon class="text-blue">sync</mat-icon> <span>Sincronização: <strong>Tempo Real</strong></span></div>
+              <div class="status-row"><mat-icon class="text-orange">dns</mat-icon> <span>Banco de Dados: <strong>Estável</strong></span></div>
+            </div>
+            <div class="glass-box sys-activity">
+              <h3>Resumo da Unidade</h3>
+              <p>O Portal SUS está operando com {{ stats.totalPacientesCadastrados }} pacientes cadastrados.</p>
+              <button class="btn-outline" (click)="setAba('fila')">Ir para Fila ao Vivo</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div *ngIf="abaAtiva === 'fila'" class="fade-in">
-        <div class="resumo-dia glass-box"><div class="resumo-item"><mat-icon>assessment</mat-icon><div class="text"><span>{{ resumoAtual.titulo }}</span><h3>{{ resumoAtual.total }}</h3></div></div><div class="resumo-item green"><mat-icon>check_circle</mat-icon><div class="text"><span>Compareceram</span><h3>{{ resumoAtual.compareceu }}</h3></div></div><div class="resumo-item red"><mat-icon>cancel</mat-icon><div class="text"><span>Faltas / Cancelados</span><h3>{{ resumoAtual.faltou }}</h3></div></div></div>
-        <div class="filter-bar glass-box"><div class="filter-group"><span class="label"><mat-icon>event</mat-icon> Data:</span><button [class.active]="filtroData === 'hoje'" (click)="filtroData = 'hoje'">Hoje</button><button [class.active]="filtroData === 'todos'" (click)="filtroData = 'todos'">Histórico Completo</button></div><div class="filter-group"><span class="label"><mat-icon>filter_list</mat-icon> Status:</span><button [class.active]="filtroStatus === 'todos'" (click)="filtroStatus = 'todos'">Todos</button><button [class.active]="filtroStatus === 'aguardando'" (click)="filtroStatus = 'aguardando'">Pendentes</button><button [class.active]="filtroStatus === 'compareceu'" (click)="filtroStatus = 'compareceu'">Compareceu</button><button [class.active]="filtroStatus === 'faltou'" (click)="filtroStatus = 'faltou'">Faltas</button></div></div>
-        
+        <div class="resumo-dia glass-box">
+          <div class="resumo-item"><mat-icon>assessment</mat-icon><div class="text"><span>{{ resumoAtualProp.titulo }}</span><h3>{{ resumoAtualProp.total }}</h3></div></div>
+          <div class="resumo-item green"><mat-icon>check_circle</mat-icon><div class="text"><span>Compareceram</span><h3>{{ resumoAtualProp.compareceu }}</h3></div></div>
+          <div class="resumo-item red"><mat-icon>cancel</mat-icon><div class="text"><span>Faltas / Cancelados</span><h3>{{ resumoAtualProp.faltou }}</h3></div></div>
+        </div>
+        <div class="filter-bar glass-box">
+          <div class="filter-group">
+            <span class="label"><mat-icon>event</mat-icon> Data:</span>
+            <button [class.active]="filtroData === 'hoje'" (click)="alterarFiltroData('hoje')">Hoje</button>
+            <button [class.active]="filtroData === 'todos'" (click)="alterarFiltroData('todos')">Histórico Completo</button>
+          </div>
+          <div class="filter-group">
+            <span class="label"><mat-icon>filter_list</mat-icon> Status:</span>
+            <button [class.active]="filtroStatus === 'todos'" (click)="alterarFiltroStatus('todos')">Todos</button>
+            <button [class.active]="filtroStatus === 'aguardando'" (click)="alterarFiltroStatus('aguardando')">Pendentes</button>
+            <button [class.active]="filtroStatus === 'compareceu'" (click)="alterarFiltroStatus('compareceu')">Compareceu</button>
+            <button [class.active]="filtroStatus === 'faltou'" (click)="alterarFiltroStatus('faltou')">Faltas</button>
+          </div>
+        </div>
         <div class="queue-list">
-          <div class="empty-state" *ngIf="filaFiltrada.length === 0"><mat-icon>done_all</mat-icon><h3>Nenhuma ficha encontrada</h3><p>Altere os filtros acima para buscar mais resultados.</p></div>
-          
-          <div class="queue-card" *ngFor="let p of filaFiltrada">
+          <div class="empty-state" *ngIf="filaFiltradaProp.length === 0"><mat-icon>done_all</mat-icon><h3>Nenhuma ficha encontrada</h3><p>Altere os filtros acima para buscar mais resultados.</p></div>
+          <div class="queue-card" *ngFor="let p of filaFiltradaProp">
             <div class="card-content">
               <div class="avatar"><mat-icon>person</mat-icon></div>
               <div class="info">
@@ -48,10 +98,8 @@
                 <div class="time-badge"><mat-icon>event_available</mat-icon> {{ formatarDataBR(p.data) }} {{ p.horario ? '- ' + p.horario : '' }}</div>
               </div>
             </div>
-            
             <div class="card-actions">
               <span class="status-pill" [ngClass]="getCorStatus(p.status)">{{ (p.status || 'Pendente') | uppercase }}</span>
-              
               <div class="action-buttons" *ngIf="getCorStatus(p.status) === 'aguardando'">
                 <button class="btn-check" (click)="atualizarStatusAgendamento(p.id, 'compareceu')"><mat-icon>how_to_reg</mat-icon> Presente</button>
                 <button class="btn-close" (click)="atualizarStatusAgendamento(p.id, 'cancelada')"><mat-icon>person_off</mat-icon> Faltou</button>
@@ -63,19 +111,10 @@
 
       <div *ngIf="abaAtiva === 'repasse'" class="fade-in">
         <div class="glass-box">
-          <div class="header-form">
-            <h3>Repasse de Vagas (Fila de Espera)</h3>
-            <p>Gerencie as vagas ociosas deixadas por cancelamentos ou faltas e convoque novos pacientes para preencher a agenda.</p>
-          </div>
-          
+          <div class="header-form"><h3>Repasse de Vagas (Fila de Espera)</h3><p>Gerencie as vagas ociosas deixadas por cancelamentos ou faltas.</p></div>
           <div class="queue-list">
-            <div class="empty-state" *ngIf="vagasParaRepasse.length === 0">
-              <mat-icon>verified</mat-icon>
-              <h3>Nenhuma vaga ociosa no momento</h3>
-              <p>Não há cancelamentos recentes ou faltas para repassar. A agenda está preenchida.</p>
-            </div>
-            
-            <div class="queue-card" *ngFor="let vaga of vagasParaRepasse">
+            <div class="empty-state" *ngIf="vagasParaRepasseProp.length === 0"><mat-icon>verified</mat-icon><h3>Nenhuma vaga ociosa no momento</h3><p>A agenda está preenchida.</p></div>
+            <div class="queue-card" *ngFor="let vaga of vagasParaRepasseProp">
               <div class="card-content">
                 <div class="avatar" style="background: #fef2f2; color: #ef4444;"><mat-icon>event_busy</mat-icon></div>
                 <div class="info">
@@ -94,25 +133,262 @@
         </div>
       </div>
 
+      <div *ngIf="abaAtiva === 'vacinacao'" class="fade-in">
+        <div class="glass-box form-staff">
+          <div class="header-form">
+            <h3>Registrar Imunização Inteligente</h3>
+            <p>O sistema valida a idade do paciente e o prazo da vacina automaticamente.</p>
+          </div>
+          
+          <div class="form-row flex-row">
+            <div class="form-group flex-1">
+              <label>Busca por CPF</label>
+              <div class="input-with-icon" [ngClass]="{'success': pacienteEncontrado === true, 'error': pacienteEncontrado === false}">
+                <mat-icon>{{ pacienteEncontrado === true ? 'check_circle' : (pacienteEncontrado === false ? 'error' : 'search') }}</mat-icon>
+                <input type="text" [value]="buscaCpfAdmin" (input)="buscarPacientePorCpf($event)" placeholder="000.000.000-00" maxlength="14">
+              </div>
+            </div>
+            <div class="form-group flex-2">
+              <label>Paciente e Idade</label>
+              <div class="patient-pill" *ngIf="pacienteEncontrado">
+                <strong>{{ novaVacinaAdmin.pacienteNome }}</strong>
+                <span class="age-tag">{{ novaVacinaAdmin.idadePaciente }} Anos</span>
+              </div>
+              <input *ngIf="!pacienteEncontrado" type="text" disabled placeholder="Aguardando CPF..." class="input-muted">
+            </div>
+          </div>
+          
+          <div class="form-row flex-row">
+            <div class="form-group flex-2">
+              <label>Escolher Vacina Oficial</label>
+              <select [(ngModel)]="novaVacinaAdmin.nome" (change)="validarRegrasVacina()">
+                <option value="" disabled selected>Selecione uma vacina do banco...</option>
+                <option *ngFor="let v of listaVacinasOficiais" [value]="v.nome">{{ v.nome }} ({{v.idadeMin}}-{{v.idadeMax}} anos)</option>
+              </select>
+              <span class="error-msg" *ngIf="erroRegraVacina"><mat-icon>warning</mat-icon> {{ erroRegraVacina }}</span>
+            </div>
+            <div class="form-group flex-1">
+              <label>Dose</label>
+              <select [(ngModel)]="novaVacinaAdmin.dose">
+                <option value="1ª Dose">1ª Dose</option>
+                <option value="2ª Dose">2ª Dose</option>
+                <option value="Dose Única">Dose Única</option>
+                <option value="Reforço">Reforço</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row flex-row">
+            <div class="form-group flex-1"><label>Data da Aplicação</label><input type="date" [(ngModel)]="novaVacinaAdmin.dataAplicacao"></div>
+            <div class="form-group flex-1">
+              <label>Status</label>
+              <select [(ngModel)]="novaVacinaAdmin.status">
+                <option value="concluida">Concluída (Aplicada)</option>
+                <option value="pendente">Pendente (Agendada)</option>
+                <option value="atrasada">Atrasada</option>
+              </select>
+            </div>
+            <div class="form-group flex-2">
+              <label>Local / Unidade</label>
+              <input *ngIf="nivelAcesso === 'chefe'" type="text" [value]="minhaUnidadeSimulada" disabled class="input-muted" title="Sua unidade é fixa.">
+              <select *ngIf="nivelAcesso === 'supremo'" [(ngModel)]="novaVacinaAdmin.unidade">
+                <option value="" disabled selected>Selecione a unidade...</option>
+                <option *ngFor="let u of listaUnidadesOficiais" [value]="u.nome">{{ u.nome }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-footer">
+            <button class="btn-publish-glow" style="background: linear-gradient(135deg, #059669, #10b981);" [disabled]="criandoVacinaAdmin || !!erroRegraVacina || !novaVacinaAdmin.pacienteId" (click)="salvarNovaVacinaAdmin()">
+              <mat-icon>verified</mat-icon> Registrar no Sistema
+            </button>
+            <button class="btn-publish-glow" style="margin-left: 10px; background: #3b82f6;" (click)="gerarPDF()" [disabled]="listaVacinacaoGlobal.length === 0">
+              <mat-icon>picture_as_pdf</mat-icon> Gerar PDF Oficial
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-box table-staff">
+          <div class="header-table"><h3>Banco Central de Imunização</h3><p>Histórico global de registros do sistema.</p></div>
+          <div class="table-responsive">
+            <table class="premium-table">
+              <thead><tr><th>Paciente</th><th>Vacina</th><th>Aplicação</th><th>Unidade</th><th class="text-right">Ação</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let v of listaVacinacaoGlobal" class="fade-in-row">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar" style="background: #eff6ff; color: #3b82f6;"><mat-icon>health_and_safety</mat-icon></div>
+                      <div class="details"><strong>{{ v.pacienteNome }}</strong><span>{{ v.cpf }}</span></div>
+                    </div>
+                  </td>
+                  <td><strong>{{ v.nome }}</strong><br><span style="font-size: 12px; color: #64748b;">{{ v.dose }}</span></td>
+                  <td><span style="font-size: 13px; font-weight: 600;"><mat-icon style="font-size: 14px; vertical-align: middle;">event</mat-icon> {{ formatarDataBR(v.dataAplicacao) }}</span></td>
+                  <td>{{ v.unidade }}</td>
+                  <td class="text-right">
+                    <button class="btn-del-icon" (click)="deletarVacinaAdmin(v.id)"><mat-icon>delete_outline</mat-icon></button>
+                  </td>
+                </tr>
+                <tr *ngIf="listaVacinacaoGlobal.length === 0"><td colspan="5" class="empty-table-msg">O banco de vacinação está vazio.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div *ngIf="abaAtiva === 'mural'" class="fade-in">
-        <div class="glass-box form-mural-premium"><div class="header-form"><h3>Criar Novo Comunicado Oficial</h3><p>O aviso aparecerá no aplicativo dos pacientes e expirará automaticamente.</p></div><div class="form-row flex-row"><div class="form-group flex-2"><label>Título do Aviso</label><input type="text" [(ngModel)]="novoAviso.titulo" placeholder="Ex: Campanha de Vacinação contra Gripe"></div><div class="form-group flex-1"><label>Ocultar aviso após:</label><select [(ngModel)]="novoAviso.validadeDias"><option [ngValue]="1">24 Horas</option><option [ngValue]="3">3 Dias</option><option [ngValue]="7">1 Semana</option><option [ngValue]="30">1 Mês</option></select></div></div><div class="form-row flex-row"><div class="form-group flex-1"><label>Ícone Representativo</label><div class="visual-picker"><button *ngFor="let item of iconesDisponiveis" class="picker-btn" [class.active]="novoAviso.icone === item.id" (click)="novoAviso.icone = item.id" [title]="item.nome"><mat-icon>{{ item.id }}</mat-icon></button></div></div><div class="form-group flex-1"><label>Cor de Destaque</label><div class="visual-picker"><button *ngFor="let item of coresDisponiveis" class="picker-btn color-btn" [class.active]="novoAviso.cor === item.hex" [style.backgroundColor]="item.hex" (click)="novoAviso.cor = item.hex" [title]="item.nome"><mat-icon *ngIf="novoAviso.cor === item.hex">check</mat-icon></button></div></div></div><div class="form-group"><label>Detalhes do Comunicado</label><textarea [(ngModel)]="novoAviso.desc" placeholder="Descreva o que está acontecendo..."></textarea></div><div class="form-footer"><button class="btn-publish-glow" (click)="salvarNovoAviso()" [disabled]="criandoAviso || !novoAviso.titulo || !novoAviso.desc"><mat-icon>campaign</mat-icon> {{ criandoAviso ? 'Publicando...' : 'Publicar no Sistema' }}</button></div></div>
-        <div class="mural-grid"><div class="empty-state" *ngIf="mural.length === 0" style="grid-column: 1 / -1;"><mat-icon>speaker_notes_off</mat-icon><h3>Mural Limpo</h3><p>Nenhum aviso ativo no momento.</p></div><div class="mural-card fade-in" *ngFor="let aviso of mural" [style.border-top-color]="aviso.cor"><div class="card-top"><div class="icon-circle" [style.background]="aviso.cor"><mat-icon>{{ aviso.icone }}</mat-icon></div><button class="btn-del-icon" (click)="deletarAviso(aviso.id)" title="Excluir imediatamente"><mat-icon>delete_outline</mat-icon></button></div><h4>{{ aviso.titulo }}</h4><p class="desc">{{ aviso.desc }}</p><div class="card-bottom"><span class="validity-badge"><mat-icon>schedule</mat-icon> {{ diasParaExpirar(aviso.dataExpiracao) }}</span></div></div></div>
+        <div class="glass-box form-mural-premium">
+          <div class="header-form"><h3>Criar Novo Comunicado Oficial</h3><p>O aviso aparecerá no aplicativo dos pacientes e expirará automaticamente.</p></div>
+          <div class="form-row flex-row">
+            <div class="form-group flex-2"><label>Título do Aviso</label><input type="text" [(ngModel)]="novoAviso.titulo" placeholder="Ex: Campanha de Vacinação contra Gripe"></div>
+            <div class="form-group flex-1"><label>Ocultar aviso após:</label><select [(ngModel)]="novoAviso.validadeDias"><option [ngValue]="1">24 Horas</option><option [ngValue]="3">3 Dias</option><option [ngValue]="7">1 Semana</option><option [ngValue]="30">1 Mês</option></select></div>
+          </div>
+          <div class="form-row flex-row">
+            <div class="form-group flex-1">
+              <label>Ícone Representativo</label>
+              <div class="visual-picker">
+                <button *ngFor="let item of iconesDisponiveis" class="picker-btn" [class.active]="novoAviso.icone === item.id" (click)="novoAviso.icone = item.id" [title]="item.nome"><mat-icon>{{ item.id }}</mat-icon></button>
+              </div>
+            </div>
+            <div class="form-group flex-1">
+              <label>Cor de Destaque</label>
+              <div class="visual-picker">
+                <button *ngFor="let item of coresDisponiveis" class="picker-btn color-btn" [class.active]="novoAviso.cor === item.hex" [style.backgroundColor]="item.hex" (click)="novoAviso.cor = item.hex" [title]="item.nome"><mat-icon *ngIf="novoAviso.cor === item.hex">check</mat-icon></button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group"><label>Detalhes do Comunicado</label><textarea [(ngModel)]="novoAviso.desc" placeholder="Descreva o que está acontecendo..."></textarea></div>
+          <div class="form-footer"><button class="btn-publish-glow" (click)="salvarNovoAviso()" [disabled]="criandoAviso || !novoAviso.titulo || !novoAviso.desc"><mat-icon>campaign</mat-icon> {{ criandoAviso ? 'Publicando...' : 'Publicar no Sistema' }}</button></div>
+        </div>
+
+        <div class="mural-grid">
+          <div class="empty-state" *ngIf="mural.length === 0" style="grid-column: 1 / -1;"><mat-icon>speaker_notes_off</mat-icon><h3>Mural Limpo</h3><p>Nenhum aviso ativo no momento.</p></div>
+          <div class="mural-card fade-in" *ngFor="let aviso of mural" [style.border-top-color]="aviso.cor">
+            <div class="card-top">
+              <div class="icon-circle" [style.background]="aviso.cor"><mat-icon>{{ aviso.icone }}</mat-icon></div>
+              <button class="btn-del-icon" (click)="deletarAviso(aviso.id)"><mat-icon>delete_outline</mat-icon></button>
+            </div>
+            <h4>{{ aviso.titulo }}</h4>
+            <p class="desc">{{ aviso.desc }}</p>
+            <div class="card-bottom"><span class="validity-badge"><mat-icon>schedule</mat-icon> {{ diasParaExpirar(aviso.dataExpiracao) }}</span></div>
+          </div>
+        </div>
       </div>
 
       <div *ngIf="abaAtiva === 'equipe'" class="fade-in">
-        <div class="glass-box form-staff"><div class="header-form"><h3>Adicionar Novo Colaborador</h3><p><strong>Nota técnica:</strong> Este painel gerencia a permissão no banco de dados.</p></div><div class="form-row flex-row"><div class="form-group flex-2"><label>Nome Completo do Servidor</label><input type="text" [(ngModel)]="novoStaff.nomeCompleto" placeholder="Ex: Dra. Ana Clara"></div><div class="form-group flex-2"><label>E-mail Corporativo</label><input type="email" [(ngModel)]="novoStaff.email" placeholder="ana.clara@sus.gov"></div></div><div class="form-row flex-row"><div class="form-group flex-1"><label>Unidade Base</label><select *ngIf="nivelAcesso === 'supremo'" [(ngModel)]="novoStaff.unidadeTrabalho"><ng-container *ngFor="let uni of unidadesDisponiveis"><option *ngIf="novoStaff.cargo === 'supremo' || uni !== 'Todas'" [value]="uni">{{ uni }}</option></ng-container></select><input *ngIf="nivelAcesso === 'chefe'" type="text" [value]="minhaUnidadeSimulada" disabled title="Sua unidade é fixa."></div><div class="form-group flex-1"><label>Nível de Acesso (RBAC)</label><select [(ngModel)]="novoStaff.cargo" (ngModelChange)="aoTrocarCargo()"><option value="funcionario">Funcionário (Ver fila e mural)</option><option value="chefe" *ngIf="nivelAcesso === 'supremo'">Chefe de Unidade</option><option value="supremo" *ngIf="nivelAcesso === 'supremo'">Administrador Supremo</option></select></div></div><div class="form-footer"><button class="btn-publish-glow" (click)="salvarNovoStaff()" [disabled]="criandoStaff || !novoStaff.nomeCompleto || !novoStaff.email || !novoStaff.unidadeTrabalho"><mat-icon>person_add</mat-icon> {{ criandoStaff ? 'Registrando...' : 'Cadastrar Colaborador' }}</button></div></div>
-        <div class="glass-box table-staff"><div class="header-table"><h3>Quadro de Funcionários Ativos</h3><p>Mostrando dados baseados no seu nível de permissão ({{ nivelAcesso | uppercase }}).</p></div><div class="table-responsive"><table class="premium-table"><thead><tr><th>Membro da Equipe</th><th>Cargo / Acesso</th><th>Unidade de Trabalho</th><th class="text-right">Ação</th></tr></thead><tbody><tr *ngFor="let membro of equipeFiltrada" class="fade-in-row"><td><div class="user-cell"><div class="avatar" [ngClass]="membro.cargo"><mat-icon>badge</mat-icon></div><div class="details"><strong>{{ membro.nomeCompleto || membro.nome || 'Sem Nome' }}</strong><span>{{ membro.email || 'Email não cadastrado' }}</span></div></div></td><td><span class="tag-cargo" [ngClass]="membro.cargo">{{ membro.cargo | uppercase }}</span></td><td>{{ membro.unidadeTrabalho || 'Acesso Global' }}</td><td class="text-right"><button class="btn-del-icon" (click)="removerStaff(membro.id, membro.cargo)" title="Revogar acesso"><mat-icon>person_remove</mat-icon></button></td></tr><tr *ngIf="equipeFiltrada.length === 0"><td colspan="4" class="empty-table-msg">Nenhum colaborador acessível para o seu nível.</td></tr></tbody></table></div></div>
+        <div class="glass-box form-staff">
+          <div class="header-form"><h3>Adicionar Novo Colaborador</h3><p><strong>Nota técnica:</strong> Este painel gerencia a permissão no banco de dados.</p></div>
+          <div class="form-row flex-row">
+            <div class="form-group flex-2"><label>Nome Completo do Servidor</label><input type="text" [(ngModel)]="novoStaff.nomeCompleto" placeholder="Ex: Dra. Ana Clara"></div>
+            <div class="form-group flex-2"><label>E-mail Corporativo</label><input type="email" [(ngModel)]="novoStaff.email" placeholder="ana.clara@sus.gov"></div>
+          </div>
+          <div class="form-row flex-row">
+            <div class="form-group flex-1">
+              <label>Unidade Base</label>
+              <select *ngIf="nivelAcesso === 'supremo'" [(ngModel)]="novoStaff.unidadeTrabalho">
+                <ng-container *ngFor="let uni of unidadesDisponiveis"><option *ngIf="novoStaff.cargo === 'supremo' || uni !== 'Todas'" [value]="uni">{{ uni }}</option></ng-container>
+              </select>
+              <input *ngIf="nivelAcesso === 'chefe'" type="text" [value]="minhaUnidadeSimulada" disabled class="input-muted">
+            </div>
+            <div class="form-group flex-1">
+              <label>Nível de Acesso (RBAC)</label>
+              <select [(ngModel)]="novoStaff.cargo" (ngModelChange)="aoTrocarCargo()">
+                <option value="funcionario">Funcionário (Ver fila e mural)</option>
+                <option value="chefe" *ngIf="nivelAcesso === 'supremo'">Chefe de Unidade</option>
+                <option value="supremo" *ngIf="nivelAcesso === 'supremo'">Administrador Supremo</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-footer"><button class="btn-publish-glow" (click)="salvarNovoStaff()" [disabled]="criandoStaff || !novoStaff.nomeCompleto || !novoStaff.email || !novoStaff.unidadeTrabalho"><mat-icon>person_add</mat-icon> {{ criandoStaff ? 'Registrando...' : 'Cadastrar Colaborador' }}</button></div>
+        </div>
+
+        <div class="glass-box table-staff">
+          <div class="header-table"><h3>Quadro de Funcionários Ativos</h3><p>Mostrando dados baseados no seu nível de permissão.</p></div>
+          <div class="table-responsive">
+            <table class="premium-table">
+              <thead><tr><th>Membro da Equipe</th><th>Cargo / Acesso</th><th>Unidade de Trabalho</th><th class="text-right">Ação</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let membro of equipeFiltradaProp" class="fade-in-row">
+                  <td>
+                    <div class="user-cell">
+                      <div class="avatar" [ngClass]="membro.cargo"><mat-icon>badge</mat-icon></div>
+                      <div class="details"><strong>{{ membro.nomeCompleto || membro.nome || 'Sem Nome' }}</strong><span>{{ membro.email || 'Email não cadastrado' }}</span></div>
+                    </div>
+                  </td>
+                  <td><span class="tag-cargo" [ngClass]="membro.cargo">{{ (membro.cargo || 'Funcionario') | uppercase }}</span></td>
+                  <td>{{ membro.unidadeTrabalho || 'Acesso Global' }}</td>
+                  <td class="text-right"><button class="btn-del-icon" (click)="removerStaff(membro.id, membro.cargo)"><mat-icon>person_remove</mat-icon></button></td>
+                </tr>
+                <tr *ngIf="equipeFiltradaProp.length === 0"><td colspan="4" class="empty-table-msg">Nenhum colaborador acessível para o seu nível.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div *ngIf="abaAtiva === 'config'" class="fade-in">
         <div class="config-columns">
           <div class="column-stack">
-            <div class="glass-box config-card"><div class="header-form"><h3>Gestão de Unidades</h3><p>Cadastre os hospitais oficiais.</p></div><div class="inline-form"><input type="text" [(ngModel)]="novaConfigUnidade" placeholder="Ex: Hospital Getúlio Vargas"><button class="btn-add blue" (click)="adicionarConfiguracao('unidade')" [disabled]="!novaConfigUnidade"><mat-icon>add</mat-icon> Adicionar</button></div><div class="config-list"><div class="list-item" *ngFor="let u of listaUnidadesOficiais"><span>{{ u.nome }}</span><button class="btn-del-icon" (click)="deletarConfiguracao(u.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaUnidadesOficiais.length === 0">Nenhuma unidade cadastrada.</div></div></div>
-            <div class="glass-box config-card"><div class="header-form"><h3>Gestão de Especialidades</h3><p>Cadastre os serviços médicos.</p></div><div class="inline-form"><input type="text" [(ngModel)]="novaConfigEspecialidade" placeholder="Ex: Cardiologia Pediátrica"><button class="btn-add orange" (click)="adicionarConfiguracao('especialidade')" [disabled]="!novaConfigEspecialidade"><mat-icon>add</mat-icon> Adicionar</button></div><div class="config-list"><div class="list-item" *ngFor="let e of listaEspecialidadesOficiais"><span>{{ e.nome }}</span><button class="btn-del-icon" (click)="deletarConfiguracao(e.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaEspecialidadesOficiais.length === 0">Nenhuma especialidade.</div></div></div>
+            <div class="glass-box config-card">
+              <div class="header-form"><h3>Gestão de Unidades</h3></div>
+              <div class="inline-form"><input type="text" [(ngModel)]="novaConfigUnidade" placeholder="Ex: Hospital Getúlio Vargas"><button class="btn-add blue" (click)="adicionarConfiguracao('unidade')" [disabled]="!novaConfigUnidade"><mat-icon>add</mat-icon> Adicionar</button></div>
+              <div class="config-list"><div class="list-item" *ngFor="let u of listaUnidadesOficiais"><span>{{ u.nome }}</span><button class="btn-del-icon" (click)="deletarConfiguracao(u.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaUnidadesOficiais.length === 0">Nenhuma unidade cadastrada.</div></div>
+            </div>
+
+            <div class="glass-box config-card">
+              <div class="header-form"><h3>Gestão de Especialidades</h3></div>
+              <div class="inline-form"><input type="text" [(ngModel)]="novaConfigEspecialidade" placeholder="Ex: Cardiologia Pediátrica"><button class="btn-add orange" (click)="adicionarConfiguracao('especialidade')" [disabled]="!novaConfigEspecialidade"><mat-icon>add</mat-icon> Adicionar</button></div>
+              <div class="config-list"><div class="list-item" *ngFor="let e of listaEspecialidadesOficiais"><span>{{ e.nome }}</span><button class="btn-del-icon" (click)="deletarConfiguracao(e.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaEspecialidadesOficiais.length === 0">Nenhuma especialidade cadastrada.</div></div>
+            </div>
+            
+            <div class="glass-box config-card">
+              <div class="header-form"><h3>Cadastrar Regras de Vacina</h3></div>
+              <div class="form-group-stack"><label>Nome da Vacina</label><input type="text" [(ngModel)]="novaConfigVacina.nome" placeholder="Ex: Pfizer Baby"></div>
+              <div class="flex-row" style="margin-top: 10px;">
+                  <div class="form-group flex-1"><label>Idade Mínima</label><input type="number" [(ngModel)]="novaConfigVacina.idadeMin"></div>
+                  <div class="form-group flex-1"><label>Idade Máxima</label><input type="number" [(ngModel)]="novaConfigVacina.idadeMax"></div>
+              </div>
+              <div class="form-group-stack" style="margin-top: 10px;"><label>Data Limite da Campanha (Opcional)</label><input type="date" [(ngModel)]="novaConfigVacina.dataLimite"></div>
+              <button class="btn-publish-glow full-width" style="margin-top: 20px; background: #10b981;" (click)="adicionarConfiguracao('vacina')"><mat-icon>save</mat-icon> Salvar Regra</button>
+              
+              <div class="agenda-divider">Vacinas Configuradas</div>
+              <div class="config-list vacina-list-premium">
+                <div class="vacina-card-modern" *ngFor="let v of listaVacinasOficiais">
+                  <div class="vacina-icon-box"><mat-icon>vaccines</mat-icon></div>
+                  <div class="vacina-info">
+                    <h4>{{ v.nome }}</h4>
+                    <div class="vacina-tags">
+                      <span class="tag blue"><mat-icon>group</mat-icon> {{ v.idadeMin }} a {{ v.idadeMax }} anos</span>
+                      <span class="tag green" *ngIf="v.dataLimite"><mat-icon>event</mat-icon> Prazo: {{ formatarDataBR(v.dataLimite) }}</span>
+                      <span class="tag orange" *ngIf="!v.dataLimite"><mat-icon>all_inclusive</mat-icon> Rotina</span>
+                    </div>
+                  </div>
+                  <button class="btn-del-icon" (click)="deletarConfiguracao(v.id)"><mat-icon>delete_outline</mat-icon></button>
+                </div>
+                <div class="empty-list" *ngIf="listaVacinasOficiais.length === 0"><mat-icon style="font-size: 32px; height: 32px; width: 32px; margin-bottom: 8px;">vaccines</mat-icon><br>Nenhuma vacina.</div>
+              </div>
+            </div>
           </div>
+
           <div class="column-stack">
-            <div class="glass-box config-card"><div class="header-form"><h3>Vincular Agenda (App)</h3><p>Abra vagas no aplicativo.</p></div><div class="form-group-stack"><label>1. Unidade</label><select [(ngModel)]="novaAgendaUnidade"><option *ngFor="let u of listaUnidadesOficiais" [value]="u.nome">{{ u.nome }}</option></select></div><div class="form-group-stack"><label>2. Especialidade</label><select [(ngModel)]="novaAgendaEspecialidade"><option *ngFor="let e of listaEspecialidadesOficiais" [value]="e.nome">{{ e.nome }}</option></select></div><div class="form-group-stack"><label>3. Horários</label><input type="text" [(ngModel)]="novaAgendaHorarios" placeholder="08:00, 09:00"></div><div class="form-group-stack"><label>4. Vagas por Horário</label><input type="number" [(ngModel)]="novaAgendaVagas" min="1" placeholder="Ex: 2"></div><button class="btn-publish-glow full-width" (click)="adicionarAgenda()" [disabled]="!novaAgendaUnidade || !novaAgendaEspecialidade || !novaAgendaHorarios"><mat-icon>save</mat-icon> Salvar Agenda</button><div class="agenda-divider">Agendas Ativas</div><div class="config-list agenda-list"><div class="agenda-item" *ngFor="let a of listaAgendasOficiais"><div class="agenda-info"><strong>{{ a.especialidade }}</strong><span class="uni">📍 {{ a.unidade }}</span><span class="vagas">{{ a.vagasPorHora }} vagas | {{ a.horariosDisponiveis }}</span></div><button class="btn-del-icon" (click)="deletarConfiguracao(a.id)"><mat-icon>delete_outline</mat-icon></button></div><div class="empty-list" *ngIf="listaAgendasOficiais.length === 0">Nenhuma agenda.</div></div></div>
+            <div class="glass-box config-card">
+              <div class="header-form"><h3>Vincular Agenda (App)</h3></div>
+              <div class="form-group-stack"><label>1. Unidade</label><select [(ngModel)]="novaAgendaUnidade"><option *ngFor="let u of listaUnidadesOficiais" [value]="u.nome">{{ u.nome }}</option></select></div>
+              <div class="form-group-stack"><label>2. Especialidade</label><select [(ngModel)]="novaAgendaEspecialidade"><option *ngFor="let e of listaEspecialidadesOficiais" [value]="e.nome">{{ e.nome }}</option></select></div>
+              <div class="form-group-stack"><label>3. Horários</label><input type="text" [(ngModel)]="novaAgendaHorarios" placeholder="08:00, 09:00"></div>
+              <div class="form-group-stack"><label>4. Vagas por Horário</label><input type="number" [(ngModel)]="novaAgendaVagas" min="1"></div>
+              <button class="btn-publish-glow full-width" (click)="adicionarAgenda()" [disabled]="!novaAgendaUnidade || !novaAgendaEspecialidade || !novaAgendaHorarios"><mat-icon>save</mat-icon> Salvar Agenda</button>
+              
+              <div class="agenda-divider">Agendas Ativas</div>
+              <div class="config-list agenda-list">
+                <div class="agenda-item" *ngFor="let a of listaAgendasOficiais">
+                  <div class="agenda-info"><strong>{{ a.especialidade }}</strong><span class="uni">📍 {{ a.unidade }}</span><span class="vagas">{{ a.vagasPorHora }} vagas | {{ a.horariosDisponiveis }}</span></div>
+                  <button class="btn-del-icon" (click)="deletarConfiguracao(a.id)"><mat-icon>delete_outline</mat-icon></button>
+                </div>
+                <div class="empty-list" *ngIf="listaAgendasOficiais.length === 0">Nenhuma agenda ativa.</div>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -120,57 +396,71 @@
   </main>
 </div>
 
-<ng-template #modalRepasse>
+<ng-template #modalConfirmacao>
   <div class="modal-repasse-wrapper fade-in">
-    <div class="modal-header">
+    <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
       <div class="modal-title-group">
-        <mat-icon style="color: #f59e0b;">sync</mat-icon>
-        <h2>Antecipar Vagas (Fila de Espera)</h2>
+        <mat-icon style="color: #ef4444; font-size: 28px; width: 28px; height: 28px;">warning_amber</mat-icon>
+        <h2 style="font-size: 18px;">{{ confirmacaoTitulo }}</h2>
       </div>
       <button class="btn-close-modal" mat-dialog-close><mat-icon>close</mat-icon></button>
     </div>
+    <div class="modal-body" style="text-align: center; padding-top: 15px;">
+      <p style="font-size: 14px; color: #64748b; margin-bottom: 24px;">{{ confirmacaoTexto }}</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button mat-dialog-close style="background: #f1f5f9; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; color: #64748b; cursor: pointer;">Cancelar</button>
+        <button class="btn-publish-glow" style="background: #ef4444; padding: 10px 20px; box-shadow: none;" (click)="executarAcaoConfirmacao()">Sim, Confirmar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
+<ng-template #modalRepasse>
+  <div class="modal-repasse-wrapper fade-in">
+    <div class="modal-header">
+      <div class="modal-title-group"><mat-icon style="color: #f59e0b;">sync</mat-icon><h2>Antecipar Vagas</h2></div>
+      <button class="btn-close-modal" mat-dialog-close><mat-icon>close</mat-icon></button>
+    </div>
     <div class="modal-body">
-      <p class="modal-desc">
-        A vaga de <strong>{{ vagaOriginal?.especialidade }}</strong> na unidade <strong>{{ vagaOriginal?.unidade }}</strong> está ociosa. 
-        Abaixo estão os pacientes que têm esta mesma consulta marcada para o futuro e podem ser antecipados.
-      </p>
-
+      <p class="modal-desc">A vaga de <strong>{{ vagaOriginal?.especialidade }}</strong> na unidade <strong>{{ vagaOriginal?.unidade }}</strong> está ociosa.</p>
       <div class="substitutos-list">
         <div class="substituto-card" *ngFor="let sub of pacientesSubstitutos">
-          
           <div class="sub-info">
             <div class="sub-avatar"><mat-icon>person</mat-icon></div>
             <div class="sub-texts">
               <strong>{{ getNome(sub) }}</strong>
               <span class="sub-date">Marcado para: {{ formatarDataBR(sub.data) }}</span>
-              
-              <span class="badge-aguardando" *ngIf="statusNotificacao[sub.id]">
-                <mat-icon>schedule</mat-icon> Aguardando Resposta
-              </span>
+              <span class="badge-aguardando" *ngIf="statusNotificacao[sub.id]"><mat-icon>schedule</mat-icon> Aguardando Resposta</span>
             </div>
           </div>
-
           <div class="sub-actions">
-            <button class="btn-contact confirm" *ngIf="statusNotificacao[sub.id]" (click)="confirmarRepasseVaga(sub)" title="Confirmar Vaga para este paciente">
-              <mat-icon>check</mat-icon>
-            </button>
-
-            <button class="btn-contact zap" (click)="chamarNoWhatsApp(sub)" title="Chamar no WhatsApp">
-              <mat-icon>chat</mat-icon>
-            </button>
-            <button class="btn-contact email" (click)="chamarNoEmail(sub)" title="Avisar por E-mail">
-              <mat-icon>mail</mat-icon>
-            </button>
+            <button class="btn-contact confirm" *ngIf="statusNotificacao[sub.id]" (click)="confirmarRepasseVaga(sub)"><mat-icon>check</mat-icon></button>
+            <button class="btn-contact zap" (click)="chamarNoWhatsApp(sub)"><mat-icon>chat</mat-icon></button>
+            <button class="btn-contact email" (click)="chamarNoEmail(sub)"><mat-icon>mail</mat-icon></button>
           </div>
-          
         </div>
-        
-        <div class="empty-substitutos" *ngIf="pacientesSubstitutos.length === 0">
-          <mat-icon>sentiment_dissatisfied</mat-icon>
-          <p>Nenhum paciente na fila de espera para esta especialidade.</p>
-        </div>
+        <div class="empty-substitutos" *ngIf="pacientesSubstitutos.length === 0"><mat-icon>group_off</mat-icon><p>Nenhum paciente na fila de espera.</p></div>
       </div>
     </div>
   </div>
 </ng-template>
+
+<div class="print-layout-pdf">
+  <div class="pdf-header">
+    <div class="pdf-logo"><mat-icon>health_and_safety</mat-icon><h2>SGA SAÚDE</h2></div>
+    <div class="pdf-title"><h1>RELATÓRIO DE VACINAÇÃO</h1></div>
+  </div>
+  <div class="pdf-table-container">
+    <table class="pdf-table">
+      <thead><tr><th>Paciente e CPF</th><th>Imunobiológico</th><th>Status e Data</th><th>Unidade</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let v of listaVacinacaoGlobal">
+          <td><strong>{{ v.pacienteNome }}</strong><br>{{ v.cpf }}</td>
+          <td>{{ v.nome }} - {{ v.dose }}</td>
+          <td>{{ v.status }}<br>{{ formatarDataBR(v.dataAplicacao) }}</td>
+          <td>{{ v.unidade }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -76,10 +76,12 @@
         </div>
         <div class="user-info-mini">
           <span class="name-text">Meu Perfil</span>
-          <span class="status-text">Paciente VIP</span>
+          <span class="status-text">Paciente </span>
         </div>
       </button>
-      <button mat-icon-button class="btn-sair" routerLink="/login" title="Sair"><mat-icon>logout</mat-icon></button>
+      
+      <!-- 🔥 BOTÃO DE SAIR CORRIGIDO 🔥 -->
+      <button mat-icon-button class="btn-sair" (click)="sair()" title="Sair"><mat-icon>logout</mat-icon></button>
     </div>
   </div>
 </mat-toolbar>
@@ -104,9 +106,23 @@
         <div class="icon-wrapper"><mat-icon>campaign</mat-icon></div>
         <div class="info"><h3>{{ avisosDoMural.length }}</h3><p>Avisos Oficiais</p></div>
       </div>
-      <div class="premium-box metric-card card-green hover-float">
+      <div class="premium-box metric-card hover-float" 
+           [ngClass]="{
+             'card-green': statusGeral === 'Protegido', 
+             'card-orange': statusGeral === 'Atenção', 
+             'card-red': statusGeral === 'Em Atraso', 
+             'card-gray': statusGeral === 'Sem Dados'
+           }">
         <div class="icon-wrapper"><mat-icon>verified_user</mat-icon></div>
-        <div class="info"><h3 class="text-green">Em dia</h3><p>Status de Vacinação</p></div>
+        <div class="info">
+          <h3 [ngClass]="{
+            'text-green': statusGeral === 'Protegido', 
+            'text-orange': statusGeral === 'Atenção', 
+            'text-red': statusGeral === 'Em Atraso', 
+            'text-muted': statusGeral === 'Sem Dados'
+          }">{{ statusGeral }}</h3>
+          <p>Status de Vacinação</p>
+        </div>
       </div>
     </div>
 
@@ -184,19 +200,25 @@
       </div>
 
       <div class="right-panel">
+        
         <div class="vax-digital-card hover-float">
           <div class="vax-header">
             <mat-icon class="vax-icon-bg">vaccines</mat-icon>
-            <div class="status-indicator-pulse"><div class="pulse-dot"></div><span>Protegido</span></div>
+            <div class="status-indicator-pulse">
+              <div class="pulse-dot" [style.background]="statusGeral === 'Protegido' ? '#34d399' : (statusGeral === 'Atenção' ? '#f59e0b' : (statusGeral === 'Em Atraso' ? '#ef4444' : '#94a3b8'))" [style.box-shadow]="statusGeral === 'Protegido' ? '0 0 8px #34d399' : (statusGeral === 'Atenção' ? '0 0 8px #f59e0b' : (statusGeral === 'Em Atraso' ? '0 0 8px #ef4444' : 'none'))"></div>
+              <span>{{ statusGeral }}</span>
+            </div>
           </div>
           <div class="vax-body">
             <div class="vax-texts">
-              <h2>Status em Dia</h2>
-              <p>Última dose: 15/01/2026</p>
+              <h2>{{ statusGeral === 'Protegido' ? 'Status em Dia' : (statusGeral === 'Atenção' ? 'Doses Pendentes' : (statusGeral === 'Em Atraso' ? 'Vacinas em Atraso' : 'Sem Histórico')) }}</h2>
+              <p>Última dose: {{ ultimaDoseData }}</p>
             </div>
             <div class="vax-progress-container">
-              <div class="vax-progress-bar"><div class="vax-progress-fill"></div></div>
-              <span class="vax-percent">100%</span>
+              <div class="vax-progress-bar">
+                <div class="vax-progress-fill" [style.width.%]="porcentagem" [style.background]="statusGeral === 'Em Atraso' ? '#ef4444' : (statusGeral === 'Sem Dados' ? '#94a3b8' : '#34d399')"></div>
+              </div>
+              <span class="vax-percent">{{ porcentagem }}%</span>
             </div>
           </div>
         </div>
@@ -209,7 +231,7 @@
             </div>
             <div class="bento-item" routerLink="/exames"><mat-icon>science</mat-icon><span>Ver Exames</span></div>
             <div class="bento-item" routerLink="/telemedicina"><mat-icon>videocam</mat-icon><span>Plantão Virtual</span></div>
-            <div class="bento-item" routerLink="/receitas"><mat-icon>description</mat-icon><span>Receitas</span></div>
+            <div class="bento-item" routerLink="/vacinacao"><mat-icon>vaccines</mat-icon><span>Vacinação</span></div>
           </div>
         </div>
 
@@ -231,18 +253,14 @@
 
 <ng-template #modalCancelamento>
   <div class="premium-modal-wrapper fade-in-up">
-    
     <div class="modal-icon-warning">
       <mat-icon>warning_amber</mat-icon>
     </div>
-    
     <h2 class="modal-title">Atenção, {{ nomeUsuario }}!</h2>
     <p class="modal-text">Tem certeza que deseja cancelar sua consulta?<br>Sua vaga será repassada para outro paciente da fila de espera.</p>
-
     <div class="modal-actions">
       <button class="btn-desistir" mat-dialog-close>Desistir</button>
       <button class="btn-liberar" (click)="cancelarConsulta()">Sim, liberar vaga</button>
     </div>
-    
   </div>
 </ng-template>

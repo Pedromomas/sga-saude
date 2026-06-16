@@ -17,13 +17,13 @@
       
       <div class="input-modern">
         <mat-icon class="prefix-icon">alternate_email</mat-icon>
-        <input type="email" [(ngModel)]="email" placeholder="E-mail institucional" [disabled]="isLoading">
+        <input type="email" [(ngModel)]="email" placeholder="E-mail" [disabled]="isLoading" (keydown.enter)="logar()">
         <div class="focus-bar"></div>
       </div>
 
       <div class="input-modern">
         <mat-icon class="prefix-icon">lock_outline</mat-icon>
-        <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Sua senha secreta" [disabled]="isLoading">
+        <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" placeholder="Sua senha" [disabled]="isLoading" (keydown.enter)="logar()">
         
         <button class="btn-eye" (click)="toggleSenha()" type="button" tabindex="-1">
           <mat-icon>{{ mostrarSenha ? 'visibility_off' : 'visibility' }}</mat-icon>
@@ -60,7 +60,7 @@
 
     <div class="panel-footer">
       <div class="divider"><span>NOVO POR AQUI?</span></div>
-      <button class="btn-outline" (click)="irParaCadastro()">Criar uma conta</button>
+      <button class="btn-outline" routerLink="/cadastro-teste">Criar uma conta</button>
     </div>
 
   </div>
